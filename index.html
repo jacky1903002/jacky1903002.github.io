@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>企業級專案整合入口平台</title>
+  <title>個人網頁入口網站</title>
   
   <!-- Google Fonts: Inter & Noto Sans TC -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +39,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-
     window.db = db;
     window.dbRef = ref;
     window.dbOnValue = onValue;
@@ -297,6 +296,17 @@ const analytics = getAnalytics(app);
       box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     }
 
+    .btn-lang {
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-lang:hover {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -446,16 +456,16 @@ const analytics = getAnalytics(app);
 
   <div id="app-container">
     <header>
-      <div class="logo-group" ondblclick="enableHeaderEdit()" title="💡 雙擊編輯標題與圖片">
+      <div class="logo-group" ondblclick="enableHeaderEdit()" title="💡 雙擊編輯標題與圖片 / Double click to edit">
         <div class="header-image-box" id="header-img-box">
           <span class="placeholder-icon">🏢</span>
         </div>
-        <h1 class="editable-title" id="main-header-title">企業專案儀表板</h1>
+        <h1 class="editable-title" id="main-header-title">個人網頁入口網站</h1>
       </div>
 
       <div class="header-btns">
-        <button class="btn" onclick="toggleLayout()"><span id="layout-icon">☰</span> 切換檢視</button>
-        <button class="btn" onclick="resetHiddenRepos()">👁️ 重置隱藏專案</button>
+        <button class="btn" onclick="toggleLayout()"><span id="layout-icon">☰</span> <span id="text-toggle-layout">切換檢視</span></button>
+        <button class="btn" onclick="resetHiddenRepos()">👁️ <span id="text-reset-hidden">重置隱藏專案</span></button>
       </div>
     </header>
 
@@ -463,21 +473,21 @@ const analytics = getAnalytics(app);
     <div class="dashboard-stats">
       <div class="stat-card blue">
         <div>
-          <div class="stat-label">專案總數量</div>
+          <div class="stat-label" id="text-stat-total-label">專案總數量</div>
           <div class="stat-value" id="stat-total">0</div>
         </div>
         <span style="font-size: 32px;">📁</span>
       </div>
       <div class="stat-card green">
         <div>
-          <div class="stat-label">可即時預覽 (Live)</div>
+          <div class="stat-label" id="text-stat-live-label">可即時預覽 (LIVE)</div>
           <div class="stat-value" id="stat-live">0</div>
         </div>
         <span style="font-size: 32px;">🚀</span>
       </div>
       <div class="stat-card purple">
         <div>
-          <div class="stat-label">已隱藏項目</div>
+          <div class="stat-label" id="text-stat-hidden-label">已隱藏項目</div>
           <div class="stat-value" id="stat-hidden">0</div>
         </div>
         <span style="font-size: 32px;">👁️</span>
@@ -492,9 +502,9 @@ const analytics = getAnalytics(app);
       </div>
 
       <div class="filter-tabs">
-        <button class="tab-btn active" onclick="setTab('all', this)">全部專案</button>
-        <button class="tab-btn" onclick="setTab('html', this)">HTML / Pages</button>
-        <button class="tab-btn" onclick="setTab('other', this)">其他語言</button>
+        <button class="tab-btn active" id="tab-all" onclick="setTab('all', this)">全部專案</button>
+        <button class="tab-btn" id="tab-html" onclick="setTab('html', this)">HTML / Pages</button>
+        <button class="tab-btn btn-lang" id="btn-lang-toggle" onclick="toggleLanguage()">🌐 English</button>
       </div>
     </div>
 
@@ -504,7 +514,51 @@ const analytics = getAnalytics(app);
 
   <script>
     const GITHUB_USERNAME = "jacky1903002";
-    
+
+    // 🌐 多國語系字典
+    const i18n = {
+      'zh-TW': {
+        defaultTitle: '個人網頁入口網站',
+        toggleLayout: '切換檢視',
+        resetHidden: '重置隱藏專案',
+        statTotal: '專案總數量',
+        statLive: '可即時預覽 (LIVE)',
+        statHidden: '已隱藏項目',
+        searchPlaceholder: '搜尋專案描述或語言類別...',
+        tabAll: '全部專案',
+        tabHtml: 'HTML / Pages',
+        langBtnText: '🌐 English',
+        emptyText: '尚無專案或符合條件的項目。',
+        editPrompt: '💡 雙擊此處編輯大標題...',
+        demoBtn: '🌐 網站 Demo',
+        codeBtn: '📦 源碼 Code',
+        hideTooltip: '隱藏專案',
+        tagTooltip: '點擊切換色彩標籤',
+        promptImgUrl: '請輸入大方框圖片網址 (留空則保持原樣/使用預設 Icon)：'
+      },
+      'en': {
+        defaultTitle: 'Personal Web Entrance Portal',
+        toggleLayout: 'Toggle View',
+        resetHidden: 'Reset Hidden Repos',
+        statTotal: 'Total Projects',
+        statLive: 'Live Previewable',
+        statHidden: 'Hidden Items',
+        searchPlaceholder: 'Search descriptions or languages...',
+        tabAll: 'All Projects',
+        tabHtml: 'HTML / Pages',
+        langBtnText: '🌐 繁體中文',
+        emptyText: 'No projects found or matching filter criteria.',
+        editPrompt: '💡 Double click to edit title...',
+        demoBtn: '🌐 Live Demo',
+        codeBtn: '📦 Source Code',
+        hideTooltip: 'Hide Project',
+        tagTooltip: 'Click to switch color tag',
+        promptImgUrl: 'Enter header logo URL (leave empty to keep default icon):'
+      }
+    };
+
+    let currentLang = localStorage.getItem('app_lang') || 'zh-TW';
+
     const defaultDescriptions = {
       "jacky1903002.github.io": "個人企業入口網站",
       "equipmentexpansionganttchart": "機台擴張甘特圖",
@@ -514,11 +568,10 @@ const analytics = getAnalytics(app);
       "03-mfgoutput": "生產製造產出分析 03"
     };
 
-    // 優先讀取 LocalStorage 當做初始備援快取
     let hiddenRepoIds = JSON.parse(localStorage.getItem('hidden_repos') || '[]');
     let customDescriptions = JSON.parse(localStorage.getItem('custom_descriptions') || '{}');
     let customTagColors = JSON.parse(localStorage.getItem('custom_tag_colors') || '{}');
-    let storedTitle = localStorage.getItem('dashboard_header_title') || '企業專案儀表板';
+    let storedTitle = localStorage.getItem('dashboard_header_title') || i18n[currentLang].defaultTitle;
     let storedImgUrl = localStorage.getItem('dashboard_header_img') || '';
 
     let allRepos = [];
@@ -536,6 +589,7 @@ const analytics = getAnalytics(app);
     ];
 
     document.addEventListener('DOMContentLoaded', () => {
+      applyLanguageUI();
       initHeaderInfo();
       initFirebaseSync();
       fetchLiveRepos();
@@ -543,7 +597,38 @@ const analytics = getAnalytics(app);
       document.getElementById('search').addEventListener('input', () => filterAndRender());
     });
 
-    // 🔄 即時與 Firebase 同步，並雙重備援至 LocalStorage
+    // 🌐 套用多國語系 UI 文字
+    function applyLanguageUI() {
+      const texts = i18n[currentLang];
+      document.getElementById('text-toggle-layout').innerText = texts.toggleLayout;
+      document.getElementById('text-reset-hidden').innerText = texts.resetHidden;
+      document.getElementById('text-stat-total-label').innerText = texts.statTotal;
+      document.getElementById('text-stat-live-label').innerText = texts.statLive;
+      document.getElementById('text-stat-hidden-label').innerText = texts.statHidden;
+      document.getElementById('search').placeholder = texts.searchPlaceholder;
+      document.getElementById('tab-all').innerText = texts.tabAll;
+      document.getElementById('tab-html').innerText = texts.tabHtml;
+      document.getElementById('btn-lang-toggle').innerText = texts.langBtnText;
+    }
+
+    // 🌐 切換中英文
+    function toggleLanguage() {
+      currentLang = currentLang === 'zh-TW' ? 'en' : 'zh-TW';
+      localStorage.setItem('app_lang', currentLang);
+      
+      // 如果標題為預設標題，隨語言切換
+      if (storedTitle === i18n['zh-TW'].defaultTitle || storedTitle === i18n['en'].defaultTitle) {
+        storedTitle = i18n[currentLang].defaultTitle;
+      }
+
+      applyLanguageUI();
+      initHeaderInfo();
+      filterAndRender();
+
+      saveToFirebaseAndLocal({ appLang: currentLang, headerTitle: storedTitle });
+    }
+
+    // 🔄 初始化 Firebase 即時監聽
     function initFirebaseSync() {
       const interval = setInterval(() => {
         if (window.db) {
@@ -553,13 +638,18 @@ const analytics = getAnalytics(app);
           window.dbOnValue(dashboardRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
+              if (data.appLang) {
+                currentLang = data.appLang;
+                localStorage.setItem('app_lang', currentLang);
+                applyLanguageUI();
+              }
+
               storedTitle = data.headerTitle || storedTitle;
               storedImgUrl = data.headerImg !== undefined ? data.headerImg : storedImgUrl;
               customDescriptions = data.customDescriptions || customDescriptions;
               customTagColors = data.customTagColors || customTagColors;
               hiddenRepoIds = data.hiddenRepoIds || hiddenRepoIds;
               
-              // 同步更新 LocalStorage 確保 F5 瞬間也有資料
               localStorage.setItem('dashboard_header_title', storedTitle);
               localStorage.setItem('dashboard_header_img', storedImgUrl);
               localStorage.setItem('custom_descriptions', JSON.stringify(customDescriptions));
@@ -577,6 +667,7 @@ const analytics = getAnalytics(app);
 
     // 💾 寫入 Firebase 與 LocalStorage
     function saveToFirebaseAndLocal(updates) {
+      if (updates.appLang !== undefined) localStorage.setItem('app_lang', updates.appLang);
       if (updates.headerTitle !== undefined) localStorage.setItem('dashboard_header_title', updates.headerTitle);
       if (updates.headerImg !== undefined) localStorage.setItem('dashboard_header_img', updates.headerImg);
       if (updates.customDescriptions !== undefined) localStorage.setItem('custom_descriptions', JSON.stringify(updates.customDescriptions));
@@ -614,10 +705,10 @@ const analytics = getAnalytics(app);
       inputEl.focus();
 
       const saveHeaderAction = () => {
-        const newTitle = inputEl.value.trim() || '企業專案儀表板';
+        const newTitle = inputEl.value.trim() || i18n[currentLang].defaultTitle;
         storedTitle = newTitle;
         
-        const newImgUrl = prompt("請輸入大方框圖片網址 (留空則保持原樣/使用預設 Icon)：", storedImgUrl);
+        const newImgUrl = prompt(i18n[currentLang].promptImgUrl, storedImgUrl);
         if (newImgUrl !== null) {
           storedImgUrl = newImgUrl.trim();
         }
@@ -669,19 +760,17 @@ const analytics = getAnalytics(app);
 
     function filterAndRender() {
       const keyword = document.getElementById('search').value.toLowerCase().trim();
+      const texts = i18n[currentLang];
 
       const visibleRepos = allRepos.filter(repo => {
         const isHidden = hiddenRepoIds.includes(String(repo.id)) || hiddenRepoIds.includes(String(repo.name));
-        
-        // 優先對稱匹配 ID 或 Name
-        const desc = customDescriptions[repo.id] || customDescriptions[repo.name] || repo.description || defaultDescriptions[repo.name] || '點擊雙擊可輸入專案描述';
+        const desc = customDescriptions[repo.id] || customDescriptions[repo.name] || repo.description || defaultDescriptions[repo.name] || texts.editPrompt;
         const lang = (repo.language || '').toLowerCase();
 
         const matchesKeyword = desc.toLowerCase().includes(keyword) || lang.includes(keyword);
 
         let matchesTab = true;
         if (activeTab === 'html') matchesTab = (lang === 'html');
-        if (activeTab === 'other') matchesTab = (lang !== 'html');
 
         return !isHidden && matchesKeyword && matchesTab;
       });
@@ -691,17 +780,17 @@ const analytics = getAnalytics(app);
 
     function renderRepos(repos) {
       const grid = document.getElementById("repo-grid");
+      const texts = i18n[currentLang];
+
       if (repos.length === 0) {
-        grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 60px; font-weight:700;'>尚無專案或符合條件的項目。</p>";
+        grid.innerHTML = `<p style='grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 60px; font-weight:700;'>${texts.emptyText}</p>`;
         return;
       }
 
       grid.innerHTML = repos.map((repo, index) => {
         const pageUrl = repo.homepage || `https://${GITHUB_USERNAME}.github.io/${repo.name}/`;
-        
-        // 使用更強健的判斷：點對點名稱匹配
         const repoKey = repo.id || repo.name;
-        const currentDesc = customDescriptions[repoKey] || customDescriptions[repo.name] || repo.description || defaultDescriptions[repo.name] || "💡 雙擊此處編輯大標題...";
+        const currentDesc = customDescriptions[repoKey] || customDescriptions[repo.name] || repo.description || defaultDescriptions[repo.name] || texts.editPrompt;
         
         const tagColorIdx = customTagColors[repoKey] || customTagColors[repo.name] || 0;
         const colorStyle = colorPresets[tagColorIdx];
@@ -711,13 +800,13 @@ const analytics = getAnalytics(app);
           <div class="card ${borderStyleClass}" data-id="${repoKey}">
             <div class="card-top">
               <div class="card-actions">
-                <button class="btn-icon" onclick="hideRepo('${repoKey}')" title="隱藏專案">👁</button>
+                <button class="btn-icon" onclick="hideRepo('${repoKey}')" title="${texts.hideTooltip}">👁</button>
                 <span class="drag-handle">⣿</span>
               </div>
             </div>
 
             <div class="card-body">
-              <div class="card-desc" id="desc-${repoKey}" ondblclick="enableInlineEdit('${repoKey}')" title="💡 雙擊修改標題">
+              <div class="card-desc" id="desc-${repoKey}" ondblclick="enableInlineEdit('${repoKey}')" title="${texts.editPrompt}">
                 ${currentDesc}
               </div>
             </div>
@@ -726,13 +815,13 @@ const analytics = getAnalytics(app);
               <span class="badge-link" 
                     style="background: ${colorStyle.bg}; color: ${colorStyle.text};" 
                     onclick="cycleTagColor(event, '${repoKey}')" 
-                    title="點擊切換色彩標籤">
+                    title="${texts.tagTooltip}">
                  ${repo.language || "HTML"} ✨
               </span>
 
               <div class="links-group">
-                <a href="${pageUrl}" target="_blank" class="btn-action btn-demo" title="前往預覽網站">🌐 網站 Demo</a>
-                <a href="${repo.html_url}" target="_blank" class="btn-action btn-code" title="前往 GitHub Repo">📦 源碼 Code</a>
+                <a href="${pageUrl}" target="_blank" class="btn-action btn-demo" title="Live Preview">${texts.demoBtn}</a>
+                <a href="${repo.html_url}" target="_blank" class="btn-action btn-code" title="GitHub Source">${texts.codeBtn}</a>
               </div>
             </div>
           </div>
@@ -751,15 +840,16 @@ const analytics = getAnalytics(app);
       const descEl = document.getElementById(`desc-${id}`);
       if (!descEl || descEl.querySelector('input')) return;
 
-      const currentText = customDescriptions[id] || (descEl.innerText.includes("雙擊此處") ? "" : descEl.innerText.trim());
+      const texts = i18n[currentLang];
+      const currentText = customDescriptions[id] || (descEl.innerText.includes("雙擊") || descEl.innerText.includes("Double click") ? "" : descEl.innerText.trim());
       
-      descEl.innerHTML = `<input type="text" class="desc-inline-input" id="input-${id}" value="${currentText}" placeholder="請輸入專案標題...">`;
+      descEl.innerHTML = `<input type="text" class="desc-inline-input" id="input-${id}" value="${currentText}" placeholder="${texts.editPrompt}">`;
       const inputEl = document.getElementById(`input-${id}`);
       inputEl.focus();
 
       const saveAction = () => {
         const newText = inputEl.value.trim();
-        customDescriptions[id] = newText || "💡 雙擊此處編輯大標題...";
+        customDescriptions[id] = newText || texts.editPrompt;
         
         saveToFirebaseAndLocal({ customDescriptions });
         filterAndRender();
@@ -774,7 +864,7 @@ const analytics = getAnalytics(app);
 
     function setTab(tab, el) {
       activeTab = tab;
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-btn:not(.btn-lang)').forEach(btn => btn.classList.remove('active'));
       el.classList.add('active');
       filterAndRender();
     }
