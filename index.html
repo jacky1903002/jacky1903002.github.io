@@ -18,27 +18,19 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
-    // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+    const firebaseConfig = {
+      apiKey: "AIzaSyBIdwm3yULBLJi3O0oHvmngxkIBgF7Q7j4",
+      authDomain: "jacky1903002.firebaseapp.com",
+      projectId: "jacky1903002",
+      storageBucket: "jacky1903002.firebasestorage.app",
+      messagingSenderId: "1018532314889",
+      appId: "1:1018532314889:web:ec04aec0fc9224e76d5dd8",
+      databaseURL: "https://jacky1903002-default-rtdb.firebaseio.com" // 請確認您的 Database URL 正確
+    };
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBIdwm3yULBLJi3O0oHvmngxkIBgF7Q7j4",
-  authDomain: "jacky1903002.firebaseapp.com",
-  projectId: "jacky1903002",
-  storageBucket: "jacky1903002.firebasestorage.app",
-  messagingSenderId: "1018532314889",
-  appId: "1:1018532314889:web:ec04aec0fc9224e76d5dd8",
-  measurementId: "G-FLMTC0QJ38"
-};
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
     window.db = db;
     window.dbRef = ref;
     window.dbOnValue = onValue;
@@ -515,7 +507,7 @@ const analytics = getAnalytics(app);
   <script>
     const GITHUB_USERNAME = "jacky1903002";
 
-    // 🌐 多國語系字典
+    // 🌐 全域介面多國語系字典
     const i18n = {
       'zh-TW': {
         defaultTitle: '個人網頁入口網站',
@@ -557,16 +549,35 @@ const analytics = getAnalytics(app);
       }
     };
 
-    let currentLang = localStorage.getItem('app_lang') || 'zh-TW';
-
-    const defaultDescriptions = {
-      "jacky1903002.github.io": "個人企業入口網站",
-      "equipmentexpansionganttchart": "機台擴張甘特圖",
-      "Machinecustomerconfig": "智慧廠區配置",
-      "01-mfgoutput": "產能量能分析 & 各客戶累積產值",
-      "02-mfgoutput": "生產製造產出分析 02",
-      "03-mfgoutput": "生產製造產出分析 03"
+    // 🌐 專案描述中英文預設字典
+    const repoDescriptions = {
+      "jacky1903002.github.io": {
+        'zh-TW': "個人企業入口網站",
+        'en': "Personal Enterprise Portal"
+      },
+      "equipmentexpansionganttchart": {
+        'zh-TW': "機台擴張甘特圖",
+        'en': "Equipment Expansion Gantt Chart"
+      },
+      "Machinecustomerconfig": {
+        'zh-TW': "智慧廠區配置",
+        'en': "Smart Factory & Machine Config"
+      },
+      "01-mfgoutput": {
+        'zh-TW': "產能量能分析 & 各客戶累積產值",
+        'en': "Capacity Output Analysis & Client Revenue"
+      },
+      "02-mfgoutput": {
+        'zh-TW': "生產製造產出分析 02",
+        'en': "Manufacturing Output Analysis 02"
+      },
+      "03-mfgoutput": {
+        'zh-TW': "生產製造產出分析 03",
+        'en': "Manufacturing Output Analysis 03"
+      }
     };
+
+    let currentLang = localStorage.getItem('app_lang') || 'zh-TW';
 
     let hiddenRepoIds = JSON.parse(localStorage.getItem('hidden_repos') || '[]');
     let customDescriptions = JSON.parse(localStorage.getItem('custom_descriptions') || '{}');
@@ -751,6 +762,34 @@ const analytics = getAnalytics(app);
       filterAndRender();
     }
 
+    // 取得當前語言下卡片應顯示的描述/標題
+    function getRepoDescription(repo) {
+      const repoKey = repo.id || repo.name;
+      const texts = i18n[currentLang];
+
+      // 1. 優先檢查使用者是否有自訂該語言的標題（若 customDescriptions 為字串則直接取用，物件則分語言）
+      if (customDescriptions[repoKey]) {
+        if (typeof customDescriptions[repoKey] === 'object') {
+          if (customDescriptions[repoKey][currentLang]) return customDescriptions[repoKey][currentLang];
+        } else {
+          return customDescriptions[repoKey];
+        }
+      }
+
+      // 2. 使用 repoDescriptions 預設字典
+      if (repoDescriptions[repo.name] && repoDescriptions[repo.name][currentLang]) {
+        return repoDescriptions[repo.name][currentLang];
+      }
+
+      // 3. 使用 GitHub 上的 description 欄位
+      if (repo.description) {
+        return repo.description;
+      }
+
+      // 4. 預設備用提示文字
+      return texts.editPrompt;
+    }
+
     function updateStats() {
       document.getElementById('stat-total').innerText = allRepos.length;
       document.getElementById('stat-hidden').innerText = hiddenRepoIds.length;
@@ -760,14 +799,13 @@ const analytics = getAnalytics(app);
 
     function filterAndRender() {
       const keyword = document.getElementById('search').value.toLowerCase().trim();
-      const texts = i18n[currentLang];
 
       const visibleRepos = allRepos.filter(repo => {
         const isHidden = hiddenRepoIds.includes(String(repo.id)) || hiddenRepoIds.includes(String(repo.name));
-        const desc = customDescriptions[repo.id] || customDescriptions[repo.name] || repo.description || defaultDescriptions[repo.name] || texts.editPrompt;
+        const desc = getRepoDescription(repo);
         const lang = (repo.language || '').toLowerCase();
 
-        const matchesKeyword = desc.toLowerCase().includes(keyword) || lang.includes(keyword);
+        const matchesKeyword = desc.toLowerCase().includes(keyword) || lang.includes(keyword) || repo.name.toLowerCase().includes(keyword);
 
         let matchesTab = true;
         if (activeTab === 'html') matchesTab = (lang === 'html');
@@ -790,7 +828,7 @@ const analytics = getAnalytics(app);
       grid.innerHTML = repos.map((repo, index) => {
         const pageUrl = repo.homepage || `https://${GITHUB_USERNAME}.github.io/${repo.name}/`;
         const repoKey = repo.id || repo.name;
-        const currentDesc = customDescriptions[repoKey] || customDescriptions[repo.name] || repo.description || defaultDescriptions[repo.name] || texts.editPrompt;
+        const currentDesc = getRepoDescription(repo);
         
         const tagColorIdx = customTagColors[repoKey] || customTagColors[repo.name] || 0;
         const colorStyle = colorPresets[tagColorIdx];
@@ -841,7 +879,7 @@ const analytics = getAnalytics(app);
       if (!descEl || descEl.querySelector('input')) return;
 
       const texts = i18n[currentLang];
-      const currentText = customDescriptions[id] || (descEl.innerText.includes("雙擊") || descEl.innerText.includes("Double click") ? "" : descEl.innerText.trim());
+      const currentText = descEl.innerText.includes("雙擊") || descEl.innerText.includes("Double click") ? "" : descEl.innerText.trim();
       
       descEl.innerHTML = `<input type="text" class="desc-inline-input" id="input-${id}" value="${currentText}" placeholder="${texts.editPrompt}">`;
       const inputEl = document.getElementById(`input-${id}`);
@@ -849,7 +887,11 @@ const analytics = getAnalytics(app);
 
       const saveAction = () => {
         const newText = inputEl.value.trim();
-        customDescriptions[id] = newText || texts.editPrompt;
+        
+        if (!customDescriptions[id] || typeof customDescriptions[id] !== 'object') {
+          customDescriptions[id] = {};
+        }
+        customDescriptions[id][currentLang] = newText || texts.editPrompt;
         
         saveToFirebaseAndLocal({ customDescriptions });
         filterAndRender();
