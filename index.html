@@ -13,6 +13,42 @@
   <!-- SortableJS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
+  <!-- Firebase SDKs (v10 Modular via CDN) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+    // ⚠️ 請替換成您在 Firebase Console 取得的配置資訊
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBIdwm3yULBLJi3O0oHvmngxkIBgF7Q7j4",
+  authDomain: "jacky1903002.firebaseapp.com",
+  projectId: "jacky1903002",
+  storageBucket: "jacky1903002.firebasestorage.app",
+  messagingSenderId: "1018532314889",
+  appId: "1:1018532314889:web:ec04aec0fc9224e76d5dd8",
+  measurementId: "G-FLMTC0QJ38"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+    // 暴露全域函數給前端調用
+    window.db = db;
+    window.dbRef = ref;
+    window.dbOnValue = onValue;
+    window.dbSet = set;
+    window.dbUpdate = update;
+  </script>
+
   <style>
     :root {
       --bg-base: #f8fafc;
@@ -22,7 +58,6 @@
       --text-muted: #64748b;
       --primary: #2563eb;
       --accent-purple: #7c3aed;
-      --accent-pink: #ec4899;
       --shadow-glass: 0 20px 40px -15px rgba(0, 0, 0, 0.07);
       --shadow-hover: 0 30px 60px -12px rgba(37, 99, 235, 0.18);
     }
@@ -42,7 +77,6 @@
       position: relative;
     }
 
-    /* --- 動態背景光斑 Orbs --- */
     .bg-blobs {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -74,7 +108,6 @@
       margin: 0 auto;
     }
 
-    /* --- Header --- */
     header {
       display: flex;
       justify-content: space-between;
@@ -85,23 +118,66 @@
     .logo-group {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
+      cursor: pointer;
     }
 
-    .logo-badge {
-      width: 14px;
-      height: 28px;
-      background: linear-gradient(135deg, var(--primary), var(--accent-purple));
-      border-radius: 6px;
+    .header-image-box {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
     }
 
-    header h1 {
+    .header-image-box:hover {
+      transform: scale(1.05);
+    }
+
+    .header-image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .header-image-box .placeholder-icon {
+      font-size: 26px;
+      color: #ffffff;
+    }
+
+    .editable-title {
       font-size: 2.2rem;
       font-weight: 900;
       letter-spacing: -0.5px;
       background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      padding: 4px 8px;
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+
+    .editable-title:hover {
+      background: rgba(37, 99, 235, 0.08);
+      -webkit-text-fill-color: #0f172a;
+    }
+
+    .title-inline-input {
+      font-size: 2rem;
+      font-weight: 900;
+      padding: 4px 12px;
+      border-radius: 12px;
+      border: 2px solid var(--primary);
+      outline: none;
+      background: #ffffff;
+      color: #0f172a;
     }
 
     .header-btns {
@@ -120,7 +196,7 @@
       font-size: 14px;
       font-weight: 700;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.25s;
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -134,7 +210,6 @@
       box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
     }
 
-    /* --- Bento-style Stats Cards --- */
     .dashboard-stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -175,7 +250,6 @@
     .stat-value { font-size: 2rem; font-weight: 900; line-height: 1.1; margin-top: 4px; }
     .stat-label { font-size: 13px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    /* --- Controls Bar --- */
     .controls-bar {
       display: flex;
       justify-content: space-between;
@@ -204,13 +278,12 @@
       font-size: 14px;
       font-weight: 600;
       transition: all 0.25s;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
     }
 
     .search-input-wrapper input:focus {
       border-color: var(--primary);
       background: #ffffff;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12), 0 10px 20px rgba(0,0,0,0.04);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
     }
 
     .search-icon {
@@ -248,7 +321,6 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     }
 
-    /* --- Card Grid & Extreme Aesthetics --- */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -275,7 +347,6 @@
       overflow: hidden;
     }
 
-    /* 五款獨家高奢視覺外框微漸層 */
     .style-1 { border: 2px solid transparent; background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), linear-gradient(135deg, #3b82f6, #8b5cf6); background-origin: border-box; background-clip: padding-box, border-box; }
     .style-2 { border: 2px solid transparent; background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), linear-gradient(135deg, #10b981, #06b6d4); background-origin: border-box; background-clip: padding-box, border-box; }
     .style-3 { border: 2px solid transparent; background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), linear-gradient(135deg, #f59e0b, #ec4899); background-origin: border-box; background-clip: padding-box, border-box; }
@@ -333,7 +404,6 @@
       flex-grow: 1;
     }
 
-    /* 🔥 純極致大標題（完全無英文檔名） */
     .card-desc {
       font-size: 1.5rem;
       font-weight: 900;
@@ -351,7 +421,6 @@
       color: var(--primary);
     }
 
-    /* 雙擊內嵌輸入框 */
     .desc-inline-input {
       width: 100%;
       font-size: 1.5rem;
@@ -364,22 +433,21 @@
       box-sizing: border-box;
       background: #ffffff;
       color: #0f172a;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
     }
 
-    /* Footer 與霓虹按鈕 */
     .card-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-top: 18px;
       border-top: 1px solid rgba(226, 232, 240, 0.6);
+      gap: 10px;
     }
 
     .badge-link {
       font-size: 13px;
       font-weight: 800;
-      padding: 6px 16px;
+      padding: 8px 16px;
       border-radius: 30px;
       text-decoration: none;
       transition: all 0.25s;
@@ -389,20 +457,40 @@
       gap: 6px;
     }
 
-    .links a {
+    .links-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-action {
       color: #ffffff;
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       text-decoration: none;
       font-size: 13px;
       font-weight: 800;
-      padding: 8px 20px;
+      padding: 8px 16px;
       border-radius: 12px;
       transition: all 0.25s;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .links a:hover {
+    .btn-demo {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-demo:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-code {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-code:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4);
     }
@@ -410,7 +498,6 @@
 </head>
 <body>
 
-  <!-- 動態背景色塊 -->
   <div class="bg-blobs">
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
@@ -419,17 +506,20 @@
 
   <div id="app-container">
     <header>
-      <div class="logo-group">
-        <div class="logo-badge"></div>
-        <h1>企業專案儀表板</h1>
+      <div class="logo-group" ondblclick="enableHeaderEdit()" title="💡 雙擊編輯標題與圖片">
+        <div class="header-image-box" id="header-img-box">
+          <span class="placeholder-icon">🏢</span>
+        </div>
+        <h1 class="editable-title" id="main-header-title">企業專案儀表板</h1>
       </div>
+
       <div class="header-btns">
         <button class="btn" onclick="toggleLayout()"><span id="layout-icon">☰</span> 切換檢視</button>
         <button class="btn" onclick="resetHiddenRepos()">👁️ 重置隱藏專案</button>
       </div>
     </header>
 
-    <!-- Bento 統計面板 -->
+    <!-- Stats -->
     <div class="dashboard-stats">
       <div class="stat-card blue">
         <div>
@@ -454,7 +544,7 @@
       </div>
     </div>
 
-    <!-- 控制區域 -->
+    <!-- Controls -->
     <div class="controls-bar">
       <div class="search-input-wrapper">
         <span class="search-icon">🔍</span>
@@ -468,14 +558,13 @@
       </div>
     </div>
 
-    <!-- 專案網格 -->
+    <!-- Grid -->
     <div class="grid" id="repo-grid"></div>
   </div>
 
   <script>
     const GITHUB_USERNAME = "jacky1903002";
     
-    // 預設常見中文大標題對照表
     const defaultDescriptions = {
       "jacky1903002.github.io": "個人企業入口網站",
       "equipmentexpansionganttchart": "機台擴張甘特圖",
@@ -485,9 +574,11 @@
       "03-mfgoutput": "生產製造產出分析 03"
     };
 
-    let hiddenRepoIds = JSON.parse(localStorage.getItem('hidden_repos') || '[]');
-    let customDescriptions = JSON.parse(localStorage.getItem('custom_descriptions') || '{}');
-    let customTagColors = JSON.parse(localStorage.getItem('custom_tag_colors') || '{}');
+    let hiddenRepoIds = [];
+    let customDescriptions = {};
+    let customTagColors = {};
+    let storedTitle = '企業專案儀表板';
+    let storedImgUrl = '';
 
     let allRepos = [];
     let sortableInstance = null;
@@ -504,10 +595,94 @@
     ];
 
     document.addEventListener('DOMContentLoaded', () => {
+      initFirebaseSync();
       fetchLiveRepos();
 
       document.getElementById('search').addEventListener('input', () => filterAndRender());
     });
+
+    // 🔄 初始化 Firebase 即時資料監聽
+    function initFirebaseSync() {
+      // 確保 Firebase SDK 已載入完成
+      const interval = setInterval(() => {
+        if (window.db) {
+          clearInterval(interval);
+          
+          const dashboardRef = window.dbRef(window.db, 'dashboard_data');
+          window.dbOnValue(dashboardRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+              storedTitle = data.headerTitle || '企業專案儀表板';
+              storedImgUrl = data.headerImg || '';
+              customDescriptions = data.customDescriptions || {};
+              customTagColors = data.customTagColors || {};
+              hiddenRepoIds = data.hiddenRepoIds || [];
+              
+              initHeaderInfo();
+              updateStats();
+              filterAndRender();
+            }
+          });
+        }
+      }, 100);
+    }
+
+    // 💾 寫入資料到 Firebase
+    function saveToFirebase(updates) {
+      if (window.db) {
+        const dashboardRef = window.dbRef(window.db, 'dashboard_data');
+        window.dbUpdate(dashboardRef, updates);
+      }
+    }
+
+    function initHeaderInfo() {
+      document.getElementById('main-header-title').innerText = storedTitle;
+      updateHeaderImageBox(storedImgUrl);
+    }
+
+    function updateHeaderImageBox(url) {
+      const box = document.getElementById('header-img-box');
+      if (url) {
+        box.innerHTML = `<img src="${url}" alt="Logo" onerror="this.parentNode.innerHTML='<span class=\\'placeholder-icon\\'>🏢</span>'">`;
+      } else {
+        box.innerHTML = `<span class="placeholder-icon">🏢</span>`;
+      }
+    }
+
+    function enableHeaderEdit() {
+      const titleEl = document.getElementById('main-header-title');
+      if (titleEl.querySelector('input')) return;
+
+      const currentText = storedTitle;
+      titleEl.innerHTML = `<input type="text" class="title-inline-input" id="header-title-input" value="${currentText}">`;
+      
+      const inputEl = document.getElementById('header-title-input');
+      inputEl.focus();
+
+      const saveHeaderAction = () => {
+        const newTitle = inputEl.value.trim() || '企業專案儀表板';
+        storedTitle = newTitle;
+        
+        const newImgUrl = prompt("請輸入大方框圖片網址 (留空則保持原樣/使用預設 Icon)：", storedImgUrl);
+        if (newImgUrl !== null) {
+          storedImgUrl = newImgUrl.trim();
+        }
+
+        initHeaderInfo();
+        
+        // 儲存至 Firebase
+        saveToFirebase({
+          headerTitle: storedTitle,
+          headerImg: storedImgUrl
+        });
+      };
+
+      inputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') saveHeaderAction();
+      });
+
+      inputEl.addEventListener('blur', saveHeaderAction);
+    }
 
     async function fetchLiveRepos() {
       try {
@@ -567,9 +742,7 @@
       }
 
       grid.innerHTML = repos.map((repo, index) => {
-        const pageUrl = `https://${GITHUB_USERNAME}.github.io/${repo.name}/`;
-        
-        // 讀取中文描述，完全不呈現英文檔名
+        const pageUrl = repo.homepage || `https://${GITHUB_USERNAME}.github.io/${repo.name}/`;
         const currentDesc = customDescriptions[repo.id] || repo.description || defaultDescriptions[repo.name] || "💡 雙擊此處編輯大標題...";
         
         const tagColorIdx = customTagColors[repo.id] || 0;
@@ -585,7 +758,6 @@
               </div>
             </div>
 
-            <!-- 主體：大型中文標題 -->
             <div class="card-body">
               <div class="card-desc" id="desc-${repo.id}" ondblclick="enableInlineEdit('${repo.id}')" title="💡 雙擊修改標題">
                 ${currentDesc}
@@ -593,14 +765,16 @@
             </div>
 
             <div class="card-footer">
-              <a href="${pageUrl}" target="_blank" class="badge-link" 
-                 style="background: ${colorStyle.bg}; color: ${colorStyle.text};" 
-                 onclick="cycleTagColor(event, '${repo.id}')" 
-                 title="點擊開啟預覽 / 點擊切換顏色">
+              <span class="badge-link" 
+                    style="background: ${colorStyle.bg}; color: ${colorStyle.text};" 
+                    onclick="cycleTagColor(event, '${repo.id}')" 
+                    title="點擊切換色彩標籤">
                  ${repo.language || "HTML"} ✨
-              </a>
-              <div class="links">
-                <a href="${repo.html_url}" target="_blank">Repo</a>
+              </span>
+
+              <div class="links-group">
+                <a href="${pageUrl}" target="_blank" class="btn-action btn-demo" title="前往預覽網站">🌐 網站 Demo</a>
+                <a href="${repo.html_url}" target="_blank" class="btn-action btn-code" title="前往 GitHub Repo">📦 源碼 Code</a>
               </div>
             </div>
           </div>
@@ -615,7 +789,6 @@
       });
     }
 
-    /* 雙擊直覺編輯標題 */
     function enableInlineEdit(id) {
       const descEl = document.getElementById(`desc-${id}`);
       if (descEl.querySelector('input')) return;
@@ -629,7 +802,9 @@
       const saveAction = () => {
         const newText = inputEl.value.trim();
         customDescriptions[id] = newText || "💡 雙擊此處編輯大標題...";
-        localStorage.setItem('custom_descriptions', JSON.stringify(customDescriptions));
+        
+        // 儲存至 Firebase
+        saveToFirebase({ customDescriptions });
         filterAndRender();
       };
 
@@ -651,20 +826,26 @@
       e.preventDefault();
       const currentIdx = customTagColors[id] || 0;
       customTagColors[id] = (currentIdx + 1) % colorPresets.length;
-      localStorage.setItem('custom_tag_colors', JSON.stringify(customTagColors));
+      
+      // 儲存至 Firebase
+      saveToFirebase({ customTagColors });
       filterAndRender();
     }
 
     function hideRepo(id) {
-      hiddenRepoIds.push(String(id));
-      localStorage.setItem('hidden_repos', JSON.stringify(hiddenRepoIds));
-      updateStats();
-      filterAndRender();
+      if (!hiddenRepoIds.includes(String(id))) {
+        hiddenRepoIds.push(String(id));
+        // 儲存至 Firebase
+        saveToFirebase({ hiddenRepoIds });
+        updateStats();
+        filterAndRender();
+      }
     }
 
     function resetHiddenRepos() {
       hiddenRepoIds = [];
-      localStorage.removeItem('hidden_repos');
+      // 儲存至 Firebase
+      saveToFirebase({ hiddenRepoIds: [] });
       updateStats();
       filterAndRender();
     }
