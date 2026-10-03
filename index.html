@@ -18,8 +18,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
-    // ⚠️ 請替換成您在 Firebase Console 取得的配置資訊
-// Import the functions you need from the SDKs you need
+    // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -41,7 +40,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
-    // 暴露全域函數給前端調用
     window.db = db;
     window.dbRef = ref;
     window.dbOnValue = onValue;
@@ -62,11 +60,7 @@ const analytics = getAnalytics(app);
       --shadow-hover: 0 30px 60px -12px rgba(37, 99, 235, 0.18);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -137,20 +131,9 @@ const analytics = getAnalytics(app);
       transition: transform 0.2s ease;
     }
 
-    .header-image-box:hover {
-      transform: scale(1.05);
-    }
-
-    .header-image-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .header-image-box .placeholder-icon {
-      font-size: 26px;
-      color: #ffffff;
-    }
+    .header-image-box:hover { transform: scale(1.05); }
+    .header-image-box img { width: 100%; height: 100%; object-fit: cover; }
+    .header-image-box .placeholder-icon { font-size: 26px; color: #ffffff; }
 
     .editable-title {
       font-size: 2.2rem;
@@ -180,10 +163,7 @@ const analytics = getAnalytics(app);
       color: #0f172a;
     }
 
-    .header-btns {
-      display: flex;
-      gap: 12px;
-    }
+    .header-btns { display: flex; gap: 12px; }
 
     .btn {
       background: rgba(255, 255, 255, 0.8);
@@ -242,11 +222,7 @@ const analytics = getAnalytics(app);
     .stat-card.green::before { background: linear-gradient(180deg, #10b981, #34d399); }
     .stat-card.purple::before { background: linear-gradient(180deg, #8b5cf6, #c084fc); }
 
-    .stat-card:hover {
-      transform: translateY(-4px);
-      background: rgba(255, 255, 255, 0.85);
-    }
-
+    .stat-card:hover { transform: translateY(-4px); background: rgba(255, 255, 255, 0.85); }
     .stat-value { font-size: 2rem; font-weight: 900; line-height: 1.1; margin-top: 4px; }
     .stat-label { font-size: 13px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
@@ -327,9 +303,7 @@ const analytics = getAnalytics(app);
       gap: 28px;
     }
 
-    .grid.list-view {
-      grid-template-columns: 1fr;
-    }
+    .grid.list-view { grid-template-columns: 1fr; }
 
     .card {
       background: var(--card-bg);
@@ -359,18 +333,8 @@ const analytics = getAnalytics(app);
       background: rgba(255, 255, 255, 0.95);
     }
 
-    .card-top {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .card-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .card-top { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 12px; }
+    .card-actions { display: flex; align-items: center; gap: 8px; }
 
     .btn-icon {
       background: rgba(241, 245, 249, 0.8);
@@ -387,22 +351,10 @@ const analytics = getAnalytics(app);
       transition: all 0.2s;
     }
 
-    .btn-icon:hover {
-      background: #fee2e2;
-      color: #ef4444;
-    }
+    .btn-icon:hover { background: #fee2e2; color: #ef4444; }
+    .drag-handle { color: var(--text-muted); font-size: 16px; opacity: 0.3; cursor: grab; }
 
-    .drag-handle {
-      color: var(--text-muted);
-      font-size: 16px;
-      opacity: 0.3;
-      cursor: grab;
-    }
-
-    .card-body {
-      margin-bottom: 28px;
-      flex-grow: 1;
-    }
+    .card-body { margin-bottom: 28px; flex-grow: 1; }
 
     .card-desc {
       font-size: 1.5rem;
@@ -416,10 +368,7 @@ const analytics = getAnalytics(app);
       letter-spacing: -0.3px;
     }
 
-    .card-desc:hover {
-      background: rgba(37, 99, 235, 0.06);
-      color: var(--primary);
-    }
+    .card-desc:hover { background: rgba(37, 99, 235, 0.06); color: var(--primary); }
 
     .desc-inline-input {
       width: 100%;
@@ -457,10 +406,7 @@ const analytics = getAnalytics(app);
       gap: 6px;
     }
 
-    .links-group {
-      display: flex;
-      gap: 8px;
-    }
+    .links-group { display: flex; gap: 8px; }
 
     .btn-action {
       color: #ffffff;
@@ -480,20 +426,14 @@ const analytics = getAnalytics(app);
       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
     }
 
-    .btn-demo:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 18px rgba(16, 185, 129, 0.4);
-    }
+    .btn-demo:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(16, 185, 129, 0.4); }
 
     .btn-code {
       background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
     }
 
-    .btn-code:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4);
-    }
+    .btn-code:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4); }
   </style>
 </head>
 <body>
@@ -574,11 +514,12 @@ const analytics = getAnalytics(app);
       "03-mfgoutput": "生產製造產出分析 03"
     };
 
-    let hiddenRepoIds = [];
-    let customDescriptions = {};
-    let customTagColors = {};
-    let storedTitle = '企業專案儀表板';
-    let storedImgUrl = '';
+    // 優先讀取 LocalStorage 當做初始備援快取
+    let hiddenRepoIds = JSON.parse(localStorage.getItem('hidden_repos') || '[]');
+    let customDescriptions = JSON.parse(localStorage.getItem('custom_descriptions') || '{}');
+    let customTagColors = JSON.parse(localStorage.getItem('custom_tag_colors') || '{}');
+    let storedTitle = localStorage.getItem('dashboard_header_title') || '企業專案儀表板';
+    let storedImgUrl = localStorage.getItem('dashboard_header_img') || '';
 
     let allRepos = [];
     let sortableInstance = null;
@@ -595,15 +536,15 @@ const analytics = getAnalytics(app);
     ];
 
     document.addEventListener('DOMContentLoaded', () => {
+      initHeaderInfo();
       initFirebaseSync();
       fetchLiveRepos();
 
       document.getElementById('search').addEventListener('input', () => filterAndRender());
     });
 
-    // 🔄 初始化 Firebase 即時資料監聽
+    // 🔄 即時與 Firebase 同步，並雙重備援至 LocalStorage
     function initFirebaseSync() {
-      // 確保 Firebase SDK 已載入完成
       const interval = setInterval(() => {
         if (window.db) {
           clearInterval(interval);
@@ -612,12 +553,19 @@ const analytics = getAnalytics(app);
           window.dbOnValue(dashboardRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
-              storedTitle = data.headerTitle || '企業專案儀表板';
-              storedImgUrl = data.headerImg || '';
-              customDescriptions = data.customDescriptions || {};
-              customTagColors = data.customTagColors || {};
-              hiddenRepoIds = data.hiddenRepoIds || [];
+              storedTitle = data.headerTitle || storedTitle;
+              storedImgUrl = data.headerImg !== undefined ? data.headerImg : storedImgUrl;
+              customDescriptions = data.customDescriptions || customDescriptions;
+              customTagColors = data.customTagColors || customTagColors;
+              hiddenRepoIds = data.hiddenRepoIds || hiddenRepoIds;
               
+              // 同步更新 LocalStorage 確保 F5 瞬間也有資料
+              localStorage.setItem('dashboard_header_title', storedTitle);
+              localStorage.setItem('dashboard_header_img', storedImgUrl);
+              localStorage.setItem('custom_descriptions', JSON.stringify(customDescriptions));
+              localStorage.setItem('custom_tag_colors', JSON.stringify(customTagColors));
+              localStorage.setItem('hidden_repos', JSON.stringify(hiddenRepoIds));
+
               initHeaderInfo();
               updateStats();
               filterAndRender();
@@ -627,8 +575,14 @@ const analytics = getAnalytics(app);
       }, 100);
     }
 
-    // 💾 寫入資料到 Firebase
-    function saveToFirebase(updates) {
+    // 💾 寫入 Firebase 與 LocalStorage
+    function saveToFirebaseAndLocal(updates) {
+      if (updates.headerTitle !== undefined) localStorage.setItem('dashboard_header_title', updates.headerTitle);
+      if (updates.headerImg !== undefined) localStorage.setItem('dashboard_header_img', updates.headerImg);
+      if (updates.customDescriptions !== undefined) localStorage.setItem('custom_descriptions', JSON.stringify(updates.customDescriptions));
+      if (updates.customTagColors !== undefined) localStorage.setItem('custom_tag_colors', JSON.stringify(updates.customTagColors));
+      if (updates.hiddenRepoIds !== undefined) localStorage.setItem('hidden_repos', JSON.stringify(updates.hiddenRepoIds));
+
       if (window.db) {
         const dashboardRef = window.dbRef(window.db, 'dashboard_data');
         window.dbUpdate(dashboardRef, updates);
@@ -670,8 +624,7 @@ const analytics = getAnalytics(app);
 
         initHeaderInfo();
         
-        // 儲存至 Firebase
-        saveToFirebase({
+        saveToFirebaseAndLocal({
           headerTitle: storedTitle,
           headerImg: storedImgUrl
         });
@@ -718,8 +671,10 @@ const analytics = getAnalytics(app);
       const keyword = document.getElementById('search').value.toLowerCase().trim();
 
       const visibleRepos = allRepos.filter(repo => {
-        const isHidden = hiddenRepoIds.includes(String(repo.id));
-        const desc = customDescriptions[repo.id] || repo.description || defaultDescriptions[repo.name] || '點擊雙擊可輸入專案描述';
+        const isHidden = hiddenRepoIds.includes(String(repo.id)) || hiddenRepoIds.includes(String(repo.name));
+        
+        // 優先對稱匹配 ID 或 Name
+        const desc = customDescriptions[repo.id] || customDescriptions[repo.name] || repo.description || defaultDescriptions[repo.name] || '點擊雙擊可輸入專案描述';
         const lang = (repo.language || '').toLowerCase();
 
         const matchesKeyword = desc.toLowerCase().includes(keyword) || lang.includes(keyword);
@@ -743,23 +698,26 @@ const analytics = getAnalytics(app);
 
       grid.innerHTML = repos.map((repo, index) => {
         const pageUrl = repo.homepage || `https://${GITHUB_USERNAME}.github.io/${repo.name}/`;
-        const currentDesc = customDescriptions[repo.id] || repo.description || defaultDescriptions[repo.name] || "💡 雙擊此處編輯大標題...";
         
-        const tagColorIdx = customTagColors[repo.id] || 0;
+        // 使用更強健的判斷：點對點名稱匹配
+        const repoKey = repo.id || repo.name;
+        const currentDesc = customDescriptions[repoKey] || customDescriptions[repo.name] || repo.description || defaultDescriptions[repo.name] || "💡 雙擊此處編輯大標題...";
+        
+        const tagColorIdx = customTagColors[repoKey] || customTagColors[repo.name] || 0;
         const colorStyle = colorPresets[tagColorIdx];
         const borderStyleClass = borderStyles[index % borderStyles.length];
 
         return `
-          <div class="card ${borderStyleClass}" data-id="${repo.id}">
+          <div class="card ${borderStyleClass}" data-id="${repoKey}">
             <div class="card-top">
               <div class="card-actions">
-                <button class="btn-icon" onclick="hideRepo('${repo.id}')" title="隱藏專案">👁</button>
+                <button class="btn-icon" onclick="hideRepo('${repoKey}')" title="隱藏專案">👁</button>
                 <span class="drag-handle">⣿</span>
               </div>
             </div>
 
             <div class="card-body">
-              <div class="card-desc" id="desc-${repo.id}" ondblclick="enableInlineEdit('${repo.id}')" title="💡 雙擊修改標題">
+              <div class="card-desc" id="desc-${repoKey}" ondblclick="enableInlineEdit('${repoKey}')" title="💡 雙擊修改標題">
                 ${currentDesc}
               </div>
             </div>
@@ -767,7 +725,7 @@ const analytics = getAnalytics(app);
             <div class="card-footer">
               <span class="badge-link" 
                     style="background: ${colorStyle.bg}; color: ${colorStyle.text};" 
-                    onclick="cycleTagColor(event, '${repo.id}')" 
+                    onclick="cycleTagColor(event, '${repoKey}')" 
                     title="點擊切換色彩標籤">
                  ${repo.language || "HTML"} ✨
               </span>
@@ -791,7 +749,7 @@ const analytics = getAnalytics(app);
 
     function enableInlineEdit(id) {
       const descEl = document.getElementById(`desc-${id}`);
-      if (descEl.querySelector('input')) return;
+      if (!descEl || descEl.querySelector('input')) return;
 
       const currentText = customDescriptions[id] || (descEl.innerText.includes("雙擊此處") ? "" : descEl.innerText.trim());
       
@@ -803,8 +761,7 @@ const analytics = getAnalytics(app);
         const newText = inputEl.value.trim();
         customDescriptions[id] = newText || "💡 雙擊此處編輯大標題...";
         
-        // 儲存至 Firebase
-        saveToFirebase({ customDescriptions });
+        saveToFirebaseAndLocal({ customDescriptions });
         filterAndRender();
       };
 
@@ -827,16 +784,15 @@ const analytics = getAnalytics(app);
       const currentIdx = customTagColors[id] || 0;
       customTagColors[id] = (currentIdx + 1) % colorPresets.length;
       
-      // 儲存至 Firebase
-      saveToFirebase({ customTagColors });
+      saveToFirebaseAndLocal({ customTagColors });
       filterAndRender();
     }
 
     function hideRepo(id) {
-      if (!hiddenRepoIds.includes(String(id))) {
-        hiddenRepoIds.push(String(id));
-        // 儲存至 Firebase
-        saveToFirebase({ hiddenRepoIds });
+      const targetId = String(id);
+      if (!hiddenRepoIds.includes(targetId)) {
+        hiddenRepoIds.push(targetId);
+        saveToFirebaseAndLocal({ hiddenRepoIds });
         updateStats();
         filterAndRender();
       }
@@ -844,8 +800,7 @@ const analytics = getAnalytics(app);
 
     function resetHiddenRepos() {
       hiddenRepoIds = [];
-      // 儲存至 Firebase
-      saveToFirebase({ hiddenRepoIds: [] });
+      saveToFirebaseAndLocal({ hiddenRepoIds: [] });
       updateStats();
       filterAndRender();
     }
