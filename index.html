@@ -10,20 +10,23 @@
 
   <style>
     :root {
-      --bg-color: #0b0f17;
-      --card-bg: rgba(22, 27, 34, 0.75);
-      --card-hover-bg: #1f242d;
-      --border-color: rgba(255, 255, 255, 0.1);
+      /* 淺色簡報主題色系 */
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --card-hover-bg: #ffffff;
+      --border-color: #e2e8f0;
       --primary-color: #2563eb;
-      --accent-color: #38bdf8;
-      --text-color: #f3f4f6;
-      --text-muted: #9ca3af;
+      --accent-color: #0284c7;
+      --text-color: #0f172a;
+      --text-muted: #64748b;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: var(--bg-color);
-      background-image: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.15), transparent 70%);
+      background-image: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.05), transparent 60%);
       color: var(--text-color);
       margin: 0;
       min-height: 100vh;
@@ -31,7 +34,7 @@
 
     /* --- 主頁面區塊 --- */
     #app-container {
-      padding: 30px;
+      padding: 40px 30px;
       max-width: 1280px;
       margin: 0 auto;
     }
@@ -42,15 +45,14 @@
       align-items: center;
       margin-bottom: 30px;
       padding-bottom: 20px;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 2px solid var(--border-color);
     }
 
     header h1 {
-      font-size: 1.5rem;
+      font-size: 1.75rem;
+      font-weight: 700;
       margin: 0;
-      background: linear-gradient(90deg, #fff, var(--accent-color));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--text-color);
     }
 
     .search-bar {
@@ -59,14 +61,21 @@
 
     .search-bar input {
       width: 100%;
-      max-width: 400px;
-      padding: 12px 18px;
-      border-radius: 20px;
+      max-width: 420px;
+      padding: 12px 20px;
+      border-radius: 12px;
       border: 1px solid var(--border-color);
       background: var(--card-bg);
-      color: white;
+      color: var(--text-color);
       outline: none;
       font-size: 14px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+
+    .search-bar input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
 
     /* --- 活潑卡牌與 Grid 佈局 --- */
@@ -78,9 +87,8 @@
 
     .card {
       background: var(--card-bg);
-      backdrop-filter: blur(10px);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 24px;
       display: flex;
       flex-direction: column;
@@ -88,33 +96,34 @@
       cursor: grab;
       position: relative;
       user-select: none;
+      box-shadow: var(--shadow-sm);
       transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
 
     .card:active { cursor: grabbing; }
 
     .card:hover {
-      transform: translateY(-6px) scale(1.02);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-      border-color: var(--accent-color);
-      background: var(--card-hover-bg);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-color);
     }
 
     .sortable-ghost {
-      opacity: 0.3;
-      border: 2px dashed var(--accent-color);
+      opacity: 0.4;
+      background: #eff6ff;
+      border: 2px dashed var(--primary-color);
     }
 
     .sortable-drag {
-      transform: rotate(3deg) scale(1.05) !important;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      transform: rotate(2deg) scale(1.03) !important;
+      box-shadow: var(--shadow-md);
     }
 
     .card-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #ffffff;
-      margin: 0 0 8px 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-color);
+      margin: 0 0 10px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -122,12 +131,12 @@
 
     .drag-handle {
       color: var(--text-muted);
-      font-size: 12px;
-      opacity: 0.5;
+      font-size: 14px;
+      opacity: 0.4;
     }
 
     .card-desc {
-      font-size: 13px;
+      font-size: 14px;
       color: var(--text-muted);
       line-height: 1.6;
       flex-grow: 1;
@@ -138,33 +147,57 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-top: 15px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
     }
 
     .badge {
-      font-size: 11px;
-      padding: 3px 10px;
-      border-radius: 12px;
-      background: rgba(56, 189, 248, 0.1);
-      color: var(--accent-color);
-      border: 1px solid rgba(56, 189, 248, 0.2);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: #e0f2fe;
+      color: #0369a1;
     }
 
     .links a {
-      color: #ffffff;
+      color: var(--primary-color);
       text-decoration: none;
-      font-size: 12px;
-      font-weight: 500;
-      margin-left: 10px;
-      padding: 5px 10px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.05);
-      transition: background 0.2s;
+      font-size: 13px;
+      font-weight: 600;
+      margin-left: 8px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      transition: all 0.2s;
     }
 
     .links a:hover {
       background: var(--primary-color);
+      color: #ffffff;
+    }
+
+    /* 骨架屏流暢動畫 */
+    .skeleton-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      height: 180px;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+
+    .skeleton-line {
+      height: 16px;
+      background: #e2e8f0;
+      border-radius: 8px;
+      margin-bottom: 12px;
     }
   </style>
 </head>
@@ -182,22 +215,37 @@
 
     <!-- 可拖曳與自動對齊的卡牌網格區域 -->
     <div class="grid" id="repo-grid">
-      <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">載入專案資料中...</p>
+      <!-- 骨架屏載入佔位，避免空白畫面 -->
+      <div class="skeleton-card"><div class="skeleton-line" style="width: 60%;"></div><div class="skeleton-line" style="width: 90%;"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width: 50%;"></div><div class="skeleton-line" style="width: 80%;"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width: 70%;"></div><div class="skeleton-line" style="width: 85%;"></div></div>
     </div>
   </div>
 
   <script>
     const GITHUB_USERNAME = "jacky1903002";[cite: 1]
+    const CACHE_KEY = "github_repos_cache";
     let allRepos = [];
     let sortableInstance = null;
 
-    // 網頁載入完成後直接抓取 GitHub 專案
     document.addEventListener('DOMContentLoaded', () => {
+      // 1. 優先使用 LocalStorage 快取，讓畫面 0 秒瞬間呈現
+      const cachedData = localStorage.getItem(CACHE_KEY);
+      if (cachedData) {
+        try {
+          allRepos = JSON.parse(cachedData);
+          renderRepos(allRepos);
+        } catch (e) {
+          console.error("快取解析失敗", e);
+        }
+      }
+
+      // 2. 背景非同步向 API 獲取最新資料
       fetchRepos();
 
-      // 綁定搜尋輸入框事件
-      document.getElementById('search').addEventListener('keyup', (e) => {
-        const keyword = e.target.value.toLowerCase();[cite: 1]
+      // 3. 搜尋輸入過濾
+      document.getElementById('search').addEventListener('input', (e) => {
+        const keyword = e.target.value.toLowerCase().trim();[cite: 1]
         const filtered = allRepos.filter(repo => 
           repo.name.toLowerCase().includes(keyword) || 
           (repo.description && repo.description.toLowerCase().includes(keyword))[cite: 1]
@@ -206,19 +254,36 @@
       });
     });
 
-    // 抓取 GitHub 專案資料
+    // 抓取 GitHub 專案資料（超時保護機制）
     async function fetchRepos() {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5秒超時保護
+
       try {
-        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`);[cite: 1]
+        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=50`, {
+          signal: controller.signal
+        });[cite: 1]
+        clearTimeout(timeoutId);
+
+        if (!response.ok) throw new Error("API 響應錯誤");
+
         const data = await response.json();[cite: 1]
         allRepos = data.filter(repo => !repo.fork);[cite: 1]
+
+        // 更新快取
+        localStorage.setItem(CACHE_KEY, JSON.stringify(allRepos));
+        
+        // 渲染最新資料
         renderRepos(allRepos);
       } catch (error) {
-        document.getElementById("repo-grid").innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>載入專案資料失敗。</p>";
+        console.warn("最新資料抓取失敗或超時，維持快取內容:", error);
+        if (allRepos.length === 0) {
+          document.getElementById("repo-grid").innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: var(--text-muted);'>無法載入專案資料，請檢查網路連線。</p>";
+        }
       }
     }
 
-    // 渲染卡牌並開啟 SortableJS 拖曳對齊
+    // 渲染卡牌並啟動 SortableJS
     function renderRepos(repos) {
       const grid = document.getElementById("repo-grid");
       if (repos.length === 0) {
@@ -231,7 +296,7 @@
           <div>
             <div class="card-title">
               <span>${repo.name}</span>
-              <span class="drag-handle">:::</span>
+              <span class="drag-handle">⣿</span>
             </div>
             <div class="card-desc">${repo.description || "企業內部開發專案項目。"}</div>
           </div>
@@ -247,10 +312,10 @@
 
       if (sortableInstance) sortableInstance.destroy();
       sortableInstance = new Sortable(grid, {
-        animation: 250,
+        animation: 200,
         ghostClass: 'sortable-ghost',
         dragClass: 'sortable-drag',
-        easing: "cubic-bezier(1, 0, 0, 1)",
+        easing: "cubic-bezier(0.2, 1, 0.1, 1)",
       });
     }
   </script>
