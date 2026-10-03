@@ -25,7 +25,7 @@
       storageBucket: "jacky1903002.firebasestorage.app",
       messagingSenderId: "1018532314889",
       appId: "1:1018532314889:web:ec04aec0fc9224e76d5dd8",
-      databaseURL: "https://jacky1903002-default-rtdb.firebaseio.com" // 請確認您的 Database URL 正確
+      databaseURL: "https://jacky1903002-default-rtdb.firebaseio.com"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -359,7 +359,7 @@
     .card-body { margin-bottom: 28px; flex-grow: 1; }
 
     .card-desc {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 900;
       color: #0f172a;
       line-height: 1.35;
@@ -374,7 +374,7 @@
 
     .desc-inline-input {
       width: 100%;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 900;
       font-family: inherit;
       padding: 6px 10px;
@@ -522,8 +522,8 @@
         langBtnText: '🌐 English',
         emptyText: '尚無專案或符合條件的項目。',
         editPrompt: '💡 雙擊此處編輯大標題...',
-        demoBtn: '🌐 網站 Demo',
-        codeBtn: '📦 源碼 Code',
+        demoBtn: '🌐 Live Demo',
+        codeBtn: '📦 Source Code',
         hideTooltip: '隱藏專案',
         tagTooltip: '點擊切換色彩標籤',
         promptImgUrl: '請輸入大方框圖片網址 (留空則保持原樣/使用預設 Icon)：'
@@ -549,8 +549,8 @@
       }
     };
 
-    // 🌐 專案描述中英文預設字典
-    const repoDescriptions = {
+    // 🌐 所有專案的中英文預設名稱與描述字典
+    const defaultRepoDescriptions = {
       "jacky1903002.github.io": {
         'zh-TW': "個人企業入口網站",
         'en': "Personal Enterprise Portal"
@@ -564,7 +564,7 @@
         'en': "Smart Factory & Machine Config"
       },
       "01-mfgoutput": {
-        'zh-TW': "產能量能分析 & 各客戶累積產值",
+        'zh-TW': "產能量能分析&各客戶累積產值",
         'en': "Capacity Output Analysis & Client Revenue"
       },
       "02-mfgoutput": {
@@ -627,7 +627,6 @@
       currentLang = currentLang === 'zh-TW' ? 'en' : 'zh-TW';
       localStorage.setItem('app_lang', currentLang);
       
-      // 如果標題為預設標題，隨語言切換
       if (storedTitle === i18n['zh-TW'].defaultTitle || storedTitle === i18n['en'].defaultTitle) {
         storedTitle = i18n[currentLang].defaultTitle;
       }
@@ -762,32 +761,37 @@
       filterAndRender();
     }
 
-    // 取得當前語言下卡片應顯示的描述/標題
+    // 🌐 智慧判別並傳回卡片描述
     function getRepoDescription(repo) {
-      const repoKey = repo.id || repo.name;
+      const repoKey = String(repo.id || repo.name);
+      const repoName = repo.name;
       const texts = i18n[currentLang];
 
-      // 1. 優先檢查使用者是否有自訂該語言的標題（若 customDescriptions 為字串則直接取用，物件則分語言）
-      if (customDescriptions[repoKey]) {
-        if (typeof customDescriptions[repoKey] === 'object') {
-          if (customDescriptions[repoKey][currentLang]) return customDescriptions[repoKey][currentLang];
-        } else {
-          return customDescriptions[repoKey];
+      // 1. 檢查 Firebase / LocalStorage 自訂資料（支援物件與歷史舊單一字串型態）
+      const customData = customDescriptions[repoKey] || customDescriptions[repoName];
+      if (customData) {
+        if (typeof customData === 'object' && customData[currentLang]) {
+          return customData[currentLang];
+        } else if (typeof customData === 'string') {
+          // 如果以前存成純中文，切換英文時自動切換回標準預設翻譯或專案名稱
+          if (currentLang === 'zh-TW') return customData;
         }
       }
 
-      // 2. 使用 repoDescriptions 預設字典
-      if (repoDescriptions[repo.name] && repoDescriptions[repo.name][currentLang]) {
-        return repoDescriptions[repo.name][currentLang];
+      // 2. 檢查預設雙語字典
+      if (defaultRepoDescriptions[repoName] && defaultRepoDescriptions[repoName][currentLang]) {
+        return defaultRepoDescriptions[repoName][currentLang];
       }
 
-      // 3. 使用 GitHub 上的 description 欄位
-      if (repo.description) {
-        return repo.description;
+      // 3. GitHub 原生 Description 或 fallback
+      if (repo.description) return repo.description;
+
+      // 4. 若無翻譯則轉換 Repo 名稱為英文格式
+      if (currentLang === 'en') {
+        return repoName.replace(/[-_]/g, ' ').toUpperCase();
       }
 
-      // 4. 預設備用提示文字
-      return texts.editPrompt;
+      return repoName;
     }
 
     function updateStats() {
@@ -801,7 +805,8 @@
       const keyword = document.getElementById('search').value.toLowerCase().trim();
 
       const visibleRepos = allRepos.filter(repo => {
-        const isHidden = hiddenRepoIds.includes(String(repo.id)) || hiddenRepoIds.includes(String(repo.name));
+        const repoKey = String(repo.id || repo.name);
+        const isHidden = hiddenRepoIds.includes(repoKey) || hiddenRepoIds.includes(repo.name);
         const desc = getRepoDescription(repo);
         const lang = (repo.language || '').toLowerCase();
 
@@ -827,7 +832,7 @@
 
       grid.innerHTML = repos.map((repo, index) => {
         const pageUrl = repo.homepage || `https://${GITHUB_USERNAME}.github.io/${repo.name}/`;
-        const repoKey = repo.id || repo.name;
+        const repoKey = String(repo.id || repo.name);
         const currentDesc = getRepoDescription(repo);
         
         const tagColorIdx = customTagColors[repoKey] || customTagColors[repo.name] || 0;
@@ -879,19 +884,20 @@
       if (!descEl || descEl.querySelector('input')) return;
 
       const texts = i18n[currentLang];
-      const currentText = descEl.innerText.includes("雙擊") || descEl.innerText.includes("Double click") ? "" : descEl.innerText.trim();
+      const currentText = descEl.innerText.trim();
       
-      descEl.innerHTML = `<input type="text" class="desc-inline-input" id="input-${id}" value="${currentText}" placeholder="${texts.editPrompt}">`;
+      descEl.innerHTML = `<input type="text" class="desc-inline-input" id="input-${id}" value="${currentText}">`;
       const inputEl = document.getElementById(`input-${id}`);
       inputEl.focus();
 
       const saveAction = () => {
         const newText = inputEl.value.trim();
         
-        if (!customDescriptions[id] || typeof customDescriptions[id] !== 'object') {
+        // 確保儲存為語系物件
+        if (typeof customDescriptions[id] !== 'object') {
           customDescriptions[id] = {};
         }
-        customDescriptions[id][currentLang] = newText || texts.editPrompt;
+        customDescriptions[id][currentLang] = newText || currentText;
         
         saveToFirebaseAndLocal({ customDescriptions });
         filterAndRender();
