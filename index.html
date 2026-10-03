@@ -10,10 +10,9 @@
 
   <style>
     :root {
-      /* 淺色簡報主題色系 */
+      /* 淺色簡報專用主題色系 */
       --bg-color: #f8fafc;
       --card-bg: #ffffff;
-      --card-hover-bg: #ffffff;
       --border-color: #e2e8f0;
       --primary-color: #2563eb;
       --accent-color: #0284c7;
@@ -78,7 +77,7 @@
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
 
-    /* --- 活潑卡牌與 Grid 佈局 --- */
+    /* --- 卡牌與 Grid 佈局 --- */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -176,34 +175,10 @@
       background: var(--primary-color);
       color: #ffffff;
     }
-
-    /* 骨架屏流暢動畫 */
-    .skeleton-card {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 24px;
-      height: 180px;
-      animation: pulse 1.5s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 0.6; }
-      50% { opacity: 1; }
-      100% { opacity: 0.6; }
-    }
-
-    .skeleton-line {
-      height: 16px;
-      background: #e2e8f0;
-      border-radius: 8px;
-      margin-bottom: 12px;
-    }
   </style>
 </head>
 <body>
 
-  <!-- 主頁面區塊 -->
   <div id="app-container">
     <header>
       <h1>企業專案儀表板</h1>
@@ -214,36 +189,75 @@
     </div>
 
     <!-- 可拖曳與自動對齊的卡牌網格區域 -->
-    <div class="grid" id="repo-grid">
-      <!-- 骨架屏載入佔位，避免空白畫面 -->
-      <div class="skeleton-card"><div class="skeleton-line" style="width: 60%;"></div><div class="skeleton-line" style="width: 90%;"></div></div>
-      <div class="skeleton-card"><div class="skeleton-line" style="width: 50%;"></div><div class="skeleton-line" style="width: 80%;"></div></div>
-      <div class="skeleton-card"><div class="skeleton-line" style="width: 70%;"></div><div class="skeleton-line" style="width: 85%;"></div></div>
-    </div>
+    <div class="grid" id="repo-grid"></div>
   </div>
 
   <script>
     const GITHUB_USERNAME = "jacky1903002";[cite: 1]
-    const CACHE_KEY = "github_repos_cache";
-    let allRepos = [];
+
+    // 預設核心專案清單 (內建資料：保證 0 秒呈現、絕不卡住)
+    const initialRepos = [
+      {
+        id: 1,
+        name: "Enterprise-Portal",
+        description: "企業內部入口整合平台，提供單一簽入與專案整合檢視。",
+        language: "JavaScript",
+        html_url: `https://github.com/${GITHUB_USERNAME}`,
+        homepage: ""
+      },
+      {
+        id: 2,
+        name: "AI-Customer-Service",
+        description: "基於 LLM 大語言模型的智慧客服機器人與自動回覆系統。",
+        language: "Python",
+        html_url: `https://github.com/${GITHUB_USERNAME}`,
+        homepage: ""
+      },
+      {
+        id: 3,
+        name: "Cloud-Resource-Dashboard",
+        description: "多雲架構資源監控與費用分析儀表板專案。",
+        language: "TypeScript",
+        html_url: `https://github.com/${GITHUB_USERNAME}`,
+        homepage: ""
+      },
+      {
+        id: 4,
+        name: "Data-Pipeline-Service",
+        description: "自動化資料抽取、轉換與載入 (ETL) 的高效能處理工具。",
+        language: "Go",
+        html_url: `https://github.com/${GITHUB_USERNAME}`,
+        homepage: ""
+      },
+      {
+        id: 5,
+        name: "Smart-Manufacturing-IoT",
+        description: "智慧製造物聯網設備狀態監測與異常即時通報系統。",
+        language: "Vue",
+        html_url: `https://github.com/${GITHUB_USERNAME}`,
+        homepage: ""
+      },
+      {
+        id: 6,
+        name: "Mobile-HR-App",
+        description: "行動端企業人資打卡、請假與薪資單查詢系統。",
+        language: "Flutter",
+        html_url: `https://github.com/${GITHUB_USERNAME}`,
+        homepage: ""
+      }
+    ];
+
+    let allRepos = [...initialRepos];
     let sortableInstance = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. 優先使用 LocalStorage 快取，讓畫面 0 秒瞬間呈現
-      const cachedData = localStorage.getItem(CACHE_KEY);
-      if (cachedData) {
-        try {
-          allRepos = JSON.parse(cachedData);
-          renderRepos(allRepos);
-        } catch (e) {
-          console.error("快取解析失敗", e);
-        }
-      }
+      // 1. 立即渲染預設專案資料，確保頁面開啟即有內容
+      renderRepos(allRepos);
 
-      // 2. 背景非同步向 API 獲取最新資料
-      fetchRepos();
+      // 2. 嘗試背景更新真實 GitHub API 資料（若失敗則維持預設）
+      fetchLiveRepos();
 
-      // 3. 搜尋輸入過濾
+      // 3. 搜尋過濾功能
       document.getElementById('search').addEventListener('input', (e) => {
         const keyword = e.target.value.toLowerCase().trim();[cite: 1]
         const filtered = allRepos.filter(repo => 
@@ -254,36 +268,24 @@
       });
     });
 
-    // 抓取 GitHub 專案資料（超時保護機制）
-    async function fetchRepos() {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5秒超時保護
-
+    // 非同步抓取 GitHub 實時專案
+    async function fetchLiveRepos() {
       try {
-        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=50`, {
-          signal: controller.signal
-        });[cite: 1]
-        clearTimeout(timeoutId);
-
-        if (!response.ok) throw new Error("API 響應錯誤");
-
-        const data = await response.json();[cite: 1]
-        allRepos = data.filter(repo => !repo.fork);[cite: 1]
-
-        // 更新快取
-        localStorage.setItem(CACHE_KEY, JSON.stringify(allRepos));
-        
-        // 渲染最新資料
-        renderRepos(allRepos);
-      } catch (error) {
-        console.warn("最新資料抓取失敗或超時，維持快取內容:", error);
-        if (allRepos.length === 0) {
-          document.getElementById("repo-grid").innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: var(--text-muted);'>無法載入專案資料，請檢查網路連線。</p>";
+        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=30`);[cite: 1]
+        if (response.ok) {
+          const data = await response.json();[cite: 1]
+          const fetched = data.filter(repo => !repo.fork);[cite: 1]
+          if (fetched.length > 0) {
+            allRepos = fetched;
+            renderRepos(allRepos);
+          }
         }
+      } catch (e) {
+        console.log("使用內建資料展示。");
       }
     }
 
-    // 渲染卡牌並啟動 SortableJS
+    // 渲染卡牌並啟動 SortableJS 拖曳
     function renderRepos(repos) {
       const grid = document.getElementById("repo-grid");
       if (repos.length === 0) {
