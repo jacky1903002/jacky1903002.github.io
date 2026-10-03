@@ -5,26 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>企業級專案整合入口平台</title>
   
-  <!-- SortableJS -->
+  <!-- SortableJS (拖曳排序) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
   <style>
     :root {
-      --bg-color: #f8fafc;
-      --card-bg: #ffffff;
+      --bg-color: #f1f5f9;
+      --card-bg: rgba(255, 255, 255, 0.85);
       --border-color: #e2e8f0;
       --primary-color: #2563eb;
+      --primary-hover: #1d4ed8;
       --text-color: #0f172a;
       --text-muted: #64748b;
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-      --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
-      --danger-color: #ef4444;
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+      --badge-bg: #e0f2fe;
+      --badge-text: #0369a1;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: var(--bg-color);
-      background-image: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.05), transparent 60%);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.08) 0px, transparent 50%);
       color: var(--text-color);
       margin: 0;
       min-height: 100vh;
@@ -36,69 +40,168 @@
       margin: 0 auto;
     }
 
+    /* --- 頂部 Header --- */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 30px;
-      padding-bottom: 20px;
-      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 24px;
     }
 
     header h1 {
-      font-size: 1.75rem;
-      font-weight: 700;
+      font-size: 1.85rem;
+      font-weight: 800;
       margin: 0;
+      background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .btn-reset {
-      background: #f1f5f9;
-      color: var(--text-muted);
+    .header-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      background: #ffffff;
+      color: var(--text-color);
       border: 1px solid var(--border-color);
       padding: 8px 16px;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       font-size: 13px;
       font-weight: 600;
-      transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .btn-reset:hover {
-      background: var(--text-color);
-      color: #ffffff;
+    .btn:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      transform: translateY(-1px);
     }
 
-    .search-bar {
+    /* --- Dash Cards 統計數據資訊牆 --- */
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
       margin-bottom: 30px;
     }
 
-    .search-bar input {
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 16px 20px;
+      border-radius: 14px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary-color);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* --- 控制列 (搜尋 + 過濾頁籤 + 佈局切換) --- */
+    .controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      flex: 1;
+      min-width: 280px;
+      max-width: 400px;
+    }
+
+    .search-input-wrapper input {
       width: 100%;
-      max-width: 420px;
-      padding: 12px 20px;
+      padding: 12px 16px 12px 40px;
       border-radius: 12px;
       border: 1px solid var(--border-color);
-      background: var(--card-bg);
+      background: #ffffff;
       color: var(--text-color);
       outline: none;
       font-size: 14px;
+      box-sizing: border-box;
       box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
     }
 
-    .search-bar input:focus {
+    .search-input-wrapper input:focus {
       border-color: var(--primary-color);
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
 
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 10px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* --- 專案 Grid 網格 / List 列表 --- */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .grid.list-view {
+      grid-template-columns: 1fr;
     }
 
     .card {
       background: var(--card-bg);
-      border: 1px solid var(--border-color);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
       border-radius: 16px;
       padding: 24px;
       display: flex;
@@ -108,13 +211,13 @@
       position: relative;
       user-select: none;
       box-shadow: var(--shadow-sm);
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
-      border-color: var(--primary-color);
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(37, 99, 235, 0.4);
     }
 
     .card-header {
@@ -144,20 +247,20 @@
       color: var(--text-muted);
       cursor: pointer;
       font-size: 14px;
-      padding: 4px;
-      border-radius: 4px;
+      padding: 4px 6px;
+      border-radius: 6px;
       transition: background 0.2s;
     }
 
     .btn-icon:hover {
-      background: #f1f5f9;
-      color: var(--danger-color);
+      background: #fee2e2;
+      color: #ef4444;
     }
 
     .drag-handle {
       color: var(--text-muted);
-      font-size: 14px;
-      opacity: 0.4;
+      font-size: 16px;
+      opacity: 0.3;
       cursor: grab;
     }
 
@@ -179,8 +282,8 @@
       font-size: 12px;
       cursor: pointer;
       padding: 0;
-      margin-top: 6px;
-      text-decoration: underline;
+      margin-top: 8px;
+      font-weight: 600;
       display: inline-block;
     }
 
@@ -192,38 +295,84 @@
       border-top: 1px solid var(--border-color);
     }
 
-    /* 可點擊的語言 / HTML 標籤 */
+    /* 可客製化顏色的 Badge 標籤 */
     .badge-link {
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       padding: 4px 12px;
       border-radius: 20px;
-      background: #e0f2fe;
-      color: #0369a1;
       text-decoration: none;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      cursor: pointer;
       display: inline-block;
     }
 
-    .badge-link:hover {
-      background: #bae6fd;
-    }
-
     .links a {
-      color: var(--primary-color);
+      color: #ffffff;
+      background: var(--primary-color);
       text-decoration: none;
       font-size: 13px;
       font-weight: 600;
       margin-left: 8px;
-      padding: 6px 12px;
+      padding: 6px 14px;
       border-radius: 8px;
-      background: #f1f5f9;
       transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
     }
 
     .links a:hover {
-      background: var(--primary-color);
-      color: #ffffff;
+      background: var(--primary-hover);
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Modal 彈窗樣式 */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 480px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal h3 { margin-top: 0; font-size: 1.2rem; }
+
+    .modal textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      box-sizing: border-box;
+      outline: none;
+      font-family: inherit;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .modal-btns {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
     }
   </style>
 </head>
@@ -232,33 +381,91 @@
   <div id="app-container">
     <header>
       <h1>企業專案儀表板</h1>
-      <button class="btn-reset" onclick="resetHiddenRepos()">👁️ 重置隱藏專案</button>
+      <div class="header-btns">
+        <button class="btn" onclick="toggleLayout()"><span id="layout-icon">☰</span> 切換檢視</button>
+        <button class="btn" onclick="resetHiddenRepos()">👁️ 重置隱藏專案</button>
+      </div>
     </header>
 
-    <div class="search-bar">
-      <input type="text" id="search" placeholder="🔍 搜尋企業專案...">
+    <!-- 頂部數據 Dash Cards -->
+    <div class="dashboard-stats">
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">專案總數</div>
+          <div class="stat-value" id="stat-total">0</div>
+        </div>
+        <span style="font-size: 24px;">📁</span>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">可即時預覽 (Live Pages)</div>
+          <div class="stat-value" id="stat-live" style="color: #10b981;">0</div>
+        </div>
+        <span style="font-size: 24px;">🚀</span>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">已隱藏項目</div>
+          <div class="stat-value" id="stat-hidden" style="color: #f59e0b;">0</div>
+        </div>
+        <span style="font-size: 24px;">👁️</span>
+      </div>
     </div>
 
+    <!-- 控制列：搜尋與選頁籤 -->
+    <div class="controls-bar">
+      <div class="search-input-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search" placeholder="搜尋專案名稱、描述或語言...">
+      </div>
+
+      <div class="filter-tabs">
+        <button class="tab-btn active" onclick="setTab('all', this)">全部</button>
+        <button class="tab-btn" onclick="setTab('html', this)">HTML/Pages</button>
+        <button class="tab-btn" onclick="setTab('other', this)">其他語言</button>
+      </div>
+    </div>
+
+    <!-- 卡牌容器 -->
     <div class="grid" id="repo-grid"></div>
+  </div>
+
+  <!-- 編輯敘述 Modal 彈窗 -->
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal">
+      <h3>✏️ 編輯專案敘述</h3>
+      <textarea id="modal-desc-input" placeholder="寫下專案的重點簡介..."></textarea>
+      <div class="modal-btns">
+        <button class="btn" onclick="closeModal()">取消</button>
+        <button class="btn" style="background: var(--primary-color); color: white;" onclick="saveModalDesc()">儲存變更</button>
+      </div>
+    </div>
   </div>
 
   <script>
     const GITHUB_USERNAME = "jacky1903002";
     
-    // 讀取隱藏的專案與自訂敘述的快取
     let hiddenRepoIds = JSON.parse(localStorage.getItem('hidden_repos') || '[]');
     let customDescriptions = JSON.parse(localStorage.getItem('custom_descriptions') || '{}');
+    let customTagColors = JSON.parse(localStorage.getItem('custom_tag_colors') || '{}');
 
     let allRepos = [];
     let sortableInstance = null;
+    let activeTab = 'all';
+    let currentEditingId = null;
+    let isListView = false;
+
+    const colorPresets = [
+      { bg: '#e0f2fe', text: '#0369a1' }, // 藍
+      { bg: '#dcfce7', text: '#15803d' }, // 綠
+      { bg: '#f3e8ff', text: '#6b21a8' }, // 紫
+      { bg: '#ffedd5', text: '#c2410c' }  // 橘
+    ];
 
     document.addEventListener('DOMContentLoaded', () => {
       fetchLiveRepos();
 
-      document.getElementById('search').addEventListener('input', (e) => {
-        const keyword = e.target.value.toLowerCase().trim();
-        filterAndRender(keyword);
-      });
+      document.getElementById('search').addEventListener('input', () => filterAndRender());
     });
 
     async function fetchLiveRepos() {
@@ -267,12 +474,10 @@
         if (response.ok) {
           const data = await response.json();
           allRepos = data.filter(repo => !repo.fork);
-          filterAndRender();
         } else {
-          throw new Error("API 限制");
+          throw new Error();
         }
       } catch (e) {
-        // 備用靜態專案列表
         allRepos = [
           { id: '1', name: "jacky1903002.github.io", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/jacky1903002.github.io` },
           { id: '2', name: "equipmentexpansionganttchart", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/equipmentexpansionganttchart` },
@@ -281,16 +486,33 @@
           { id: '5', name: "02-mfgoutput", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/02-mfgoutput`, homepage: `https://${GITHUB_USERNAME}.github.io/02-mfgoutput` },
           { id: '6', name: "03-mfgoutput", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/03-mfgoutput`, homepage: `https://${GITHUB_USERNAME}.github.io/03-mfgoutput` }
         ];
-        filterAndRender();
       }
+      updateStats();
+      filterAndRender();
     }
 
-    function filterAndRender(keyword = '') {
+    function updateStats() {
+      document.getElementById('stat-total').innerText = allRepos.length;
+      document.getElementById('stat-hidden').innerText = hiddenRepoIds.length;
+      const liveCount = allRepos.filter(r => (r.language === 'HTML' || r.homepage)).length;
+      document.getElementById('stat-live').innerText = liveCount;
+    }
+
+    function filterAndRender() {
+      const keyword = document.getElementById('search').value.toLowerCase().trim();
+
       const visibleRepos = allRepos.filter(repo => {
         const isHidden = hiddenRepoIds.includes(String(repo.id));
         const desc = customDescriptions[repo.id] || repo.description || '';
-        const matchesKeyword = repo.name.toLowerCase().includes(keyword) || desc.toLowerCase().includes(keyword);
-        return !isHidden && matchesKeyword;
+        const lang = (repo.language || '').toLowerCase();
+
+        const matchesKeyword = repo.name.toLowerCase().includes(keyword) || desc.toLowerCase().includes(keyword) || lang.includes(keyword);
+
+        let matchesTab = true;
+        if (activeTab === 'html') matchesTab = (lang === 'html');
+        if (activeTab === 'other') matchesTab = (lang !== 'html');
+
+        return !isHidden && matchesKeyword && matchesTab;
       });
 
       renderRepos(visibleRepos);
@@ -299,13 +521,15 @@
     function renderRepos(repos) {
       const grid = document.getElementById("repo-grid");
       if (repos.length === 0) {
-        grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;'>尚無專案或專案已被隱藏。</p>";
+        grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;'>尚無專案或符合條件的項目。</p>";
         return;
       }
 
       grid.innerHTML = repos.map(repo => {
         const pageUrl = `https://${GITHUB_USERNAME}.github.io/${repo.name}/`;
         const currentDesc = customDescriptions[repo.id] || repo.description || "企業內部開發專案項目。";
+        const tagColorIdx = customTagColors[repo.id] || 0;
+        const colorStyle = colorPresets[tagColorIdx];
 
         return `
           <div class="card" data-id="${repo.id}">
@@ -319,15 +543,18 @@
               </div>
               <div class="card-desc-container">
                 <div class="card-desc" id="desc-${repo.id}">${currentDesc}</div>
-                <button class="btn-edit-desc" onclick="editDescription('${repo.id}')">✏️ 編輯敘述</button>
+                <button class="btn-edit-desc" onclick="openModal('${repo.id}')">✏️ 編輯敘述</button>
               </div>
             </div>
             <div class="card-footer">
-              <!-- HTML 標籤直接連結至 GitHub Pages -->
-              <a href="${pageUrl}" target="_blank" class="badge-link" title="點擊預估開啟網頁">${repo.language || "HTML"}</a>
+              <a href="${pageUrl}" target="_blank" class="badge-link" 
+                 style="background: ${colorStyle.bg}; color: ${colorStyle.text};" 
+                 onclick="cycleTagColor(event, '${repo.id}')" 
+                 title="左鍵開啟預覽 / 點擊切換標籤顏色">
+                 ${repo.language || "HTML"} ✨
+              </a>
               <div class="links">
                 <a href="${repo.html_url}" target="_blank">Repo</a>
-                ${repo.homepage ? `<a href="${repo.homepage}" target="_blank">Demo 🔗</a>` : ""}
               </div>
             </div>
           </div>
@@ -338,34 +565,70 @@
       sortableInstance = new Sortable(grid, {
         animation: 200,
         ghostClass: 'sortable-ghost',
-        dragClass: 'sortable-drag',
-        easing: "cubic-bezier(0.2, 1, 0.1, 1)"
+        dragClass: 'sortable-drag'
       });
     }
 
-    // 1. 隱藏專案
+    /* 頁籤切換 */
+    function setTab(tab, el) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      el.classList.add('active');
+      filterAndRender();
+    }
+
+    /* 切換顏色 */
+    function cycleTagColor(e, id) {
+      e.preventDefault();
+      const currentIdx = customTagColors[id] || 0;
+      customTagColors[id] = (currentIdx + 1) % colorPresets.length;
+      localStorage.setItem('custom_tag_colors', JSON.stringify(customTagColors));
+      filterAndRender();
+    }
+
+    /* 隱藏與重置 */
     function hideRepo(id) {
       hiddenRepoIds.push(String(id));
       localStorage.setItem('hidden_repos', JSON.stringify(hiddenRepoIds));
-      filterAndRender(document.getElementById('search').value.toLowerCase().trim());
+      updateStats();
+      filterAndRender();
     }
 
-    // 重置隱藏專案
     function resetHiddenRepos() {
       hiddenRepoIds = [];
       localStorage.removeItem('hidden_repos');
-      filterAndRender(document.getElementById('search').value.toLowerCase().trim());
+      updateStats();
+      filterAndRender();
     }
 
-    // 2. 編輯專案敘述
-    function editDescription(id) {
+    /* 切換 Grid / List */
+    function toggleLayout() {
+      const grid = document.getElementById('repo-grid');
+      isListView = !isListView;
+      grid.classList.toggle('list-view', isListView);
+      document.getElementById('layout-icon').innerText = isListView ? "☷" : "☰";
+    }
+
+    /* Modal 彈窗控制 */
+    function openModal(id) {
+      currentEditingId = id;
       const currentDesc = customDescriptions[id] || "企業內部開發專案項目。";
-      const newDesc = prompt("請輸入專案敘述：", currentDesc);
-      if (newDesc !== null) {
-        customDescriptions[id] = newDesc.trim();
+      document.getElementById('modal-desc-input').value = currentDesc;
+      document.getElementById('edit-modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('edit-modal').classList.remove('active');
+    }
+
+    function saveModalDesc() {
+      if (currentEditingId) {
+        const text = document.getElementById('modal-desc-input').value.trim();
+        customDescriptions[currentEditingId] = text;
         localStorage.setItem('custom_descriptions', JSON.stringify(customDescriptions));
-        document.getElementById(`desc-${id}`).innerText = customDescriptions[id] || "企業內部開發專案項目。";
+        filterAndRender();
       }
+      closeModal();
     }
   </script>
 </body>
