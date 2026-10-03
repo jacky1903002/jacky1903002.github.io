@@ -5,30 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>企業級專案整合入口平台</title>
   
-  <!-- SortableJS (拖曳排序) -->
+  <!-- SortableJS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
   <style>
     :root {
-      --bg-color: #f1f5f9;
-      --card-bg: rgba(255, 255, 255, 0.85);
+      --bg-color: #ffffff;
       --border-color: #e2e8f0;
-      --primary-color: #2563eb;
-      --primary-hover: #1d4ed8;
+      --primary-color: #3b82f6;
       --text-color: #0f172a;
       --text-muted: #64748b;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-      --badge-bg: #e0f2fe;
-      --badge-text: #0369a1;
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: var(--bg-color);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.08) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.08) 0px, transparent 50%);
       color: var(--text-color);
       margin: 0;
       min-height: 100vh;
@@ -46,13 +39,15 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px dashed #f1f5f9;
     }
 
     header h1 {
-      font-size: 1.85rem;
+      font-size: 2rem;
       font-weight: 800;
       margin: 0;
-      background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -81,41 +76,41 @@
     .btn:hover {
       border-color: var(--primary-color);
       color: var(--primary-color);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
 
-    /* --- Dash Cards 統計數據資訊牆 --- */
+    /* --- 繽紛 Dash Cards 統計資訊牆 --- */
     .dashboard-stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 16px;
       margin-bottom: 30px;
     }
 
     .stat-card {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      padding: 16px 20px;
-      border-radius: 14px;
+      padding: 20px;
+      border-radius: 16px;
       box-shadow: var(--shadow-sm);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: transform 0.2s;
     }
 
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--primary-color);
-    }
+    .stat-card:hover { transform: translateY(-3px); }
 
-    .stat-label {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
+    .stat-card.blue { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; }
+    .stat-card.green { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #bbf7d0; }
+    .stat-card.purple { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #e9d5ff; }
 
-    /* --- 控制列 (搜尋 + 過濾頁籤 + 佈局切換) --- */
+    .stat-value { font-size: 1.75rem; font-weight: 800; }
+    .stat-card.blue .stat-value { color: #1d4ed8; }
+    .stat-card.green .stat-value { color: #15803d; }
+    .stat-card.purple .stat-value { color: #6b21a8; }
+
+    .stat-label { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+
+    /* --- 控制列 --- */
     .controls-bar {
       display: flex;
       justify-content: space-between;
@@ -136,19 +131,18 @@
       width: 100%;
       padding: 12px 16px 12px 40px;
       border-radius: 12px;
-      border: 1px solid var(--border-color);
+      border: 2px solid #e2e8f0;
       background: #ffffff;
       color: var(--text-color);
       outline: none;
       font-size: 14px;
       box-sizing: border-box;
-      box-shadow: var(--shadow-sm);
       transition: all 0.2s;
     }
 
     .search-input-wrapper input:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
     }
 
     .search-icon {
@@ -157,24 +151,23 @@
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
-      font-size: 14px;
     }
 
     .filter-tabs {
       display: flex;
-      background: #e2e8f0;
+      background: #f1f5f9;
       padding: 4px;
-      border-radius: 10px;
+      border-radius: 12px;
       gap: 4px;
     }
 
     .tab-btn {
       border: none;
       background: transparent;
-      padding: 6px 14px;
+      padding: 8px 16px;
       border-radius: 8px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-muted);
       cursor: pointer;
       transition: all 0.2s;
@@ -182,27 +175,25 @@
 
     .tab-btn.active {
       background: #ffffff;
-      color: var(--primary-color);
+      color: #2563eb;
       box-shadow: var(--shadow-sm);
     }
 
-    /* --- 專案 Grid 網格 / List 列表 --- */
+    /* --- 卡牌 Grid 網格與特殊邊框 --- */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 24px;
-      transition: all 0.3s ease;
     }
 
     .grid.list-view {
       grid-template-columns: 1fr;
     }
 
+    /* 獨立風格卡牌基礎 */
     .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      border-radius: 16px;
+      background: #ffffff;
+      border-radius: 18px;
       padding: 24px;
       display: flex;
       flex-direction: column;
@@ -210,14 +201,40 @@
       cursor: grab;
       position: relative;
       user-select: none;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .card:hover {
-      transform: translateY(-4px) scale(1.01);
-      box-shadow: var(--shadow-lg);
-      border-color: rgba(37, 99, 235, 0.4);
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    /* 5 種獨立風格特殊外框 */
+    .style-gradient-border {
+      border: 2px solid transparent;
+      background-image: linear-gradient(#fff, #fff), linear-gradient(135deg, #3b82f6, #ec4899);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+    }
+
+    .style-neon-glow {
+      border: 2px solid #a855f7;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.15);
+    }
+
+    .style-double-line {
+      border: 3px double #0ea5e9;
+    }
+
+    .style-dashed-modern {
+      border: 2px dashed #f59e0b;
+      background: #fffdfa;
+    }
+
+    .style-soft-clay {
+      border: 1px solid #cbd5e1;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
     }
 
     .card-header {
@@ -228,11 +245,10 @@
     }
 
     .card-title {
-      font-size: 1.15rem;
-      font-weight: 700;
+      font-size: 1.2rem;
+      font-weight: 800;
       color: var(--text-color);
       word-break: break-word;
-      margin-right: 8px;
     }
 
     .card-actions {
@@ -269,22 +285,32 @@
       flex-grow: 1;
     }
 
+    /* 可雙擊編輯的敘述文字區塊 */
     .card-desc {
       font-size: 14px;
       color: var(--text-muted);
       line-height: 1.6;
+      padding: 6px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
     }
 
-    .btn-edit-desc {
-      background: none;
-      border: none;
-      color: var(--primary-color);
-      font-size: 12px;
-      cursor: pointer;
-      padding: 0;
-      margin-top: 8px;
-      font-weight: 600;
-      display: inline-block;
+    .card-desc:hover {
+      background: #f1f5f9;
+    }
+
+    /* 雙擊輸入框 */
+    .desc-inline-input {
+      width: 100%;
+      font-size: 14px;
+      font-family: inherit;
+      padding: 6px;
+      border: 2px solid #3b82f6;
+      border-radius: 8px;
+      outline: none;
+      box-sizing: border-box;
+      background: #ffffff;
     }
 
     .card-footer {
@@ -292,87 +318,37 @@
       justify-content: space-between;
       align-items: center;
       padding-top: 16px;
-      border-top: 1px solid var(--border-color);
+      border-top: 1px solid #f1f5f9;
     }
 
-    /* 可客製化顏色的 Badge 標籤 */
+    /* 多彩亮眼 Badge */
     .badge-link {
       font-size: 12px;
-      font-weight: 700;
-      padding: 4px 12px;
+      font-weight: 800;
+      padding: 6px 14px;
       border-radius: 20px;
       text-decoration: none;
       transition: all 0.2s;
       cursor: pointer;
       display: inline-block;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
     .links a {
       color: #ffffff;
-      background: var(--primary-color);
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       text-decoration: none;
       font-size: 13px;
-      font-weight: 600;
-      margin-left: 8px;
-      padding: 6px 14px;
-      border-radius: 8px;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 10px;
       transition: all 0.2s;
-      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
     }
 
     .links a:hover {
-      background: var(--primary-hover);
-      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
-    }
-
-    /* Modal 彈窗樣式 */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.4);
-      backdrop-filter: blur(4px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .modal {
-      background: #ffffff;
-      padding: 24px;
-      border-radius: 16px;
-      width: 90%;
-      max-width: 480px;
-      box-shadow: var(--shadow-lg);
-    }
-
-    .modal h3 { margin-top: 0; font-size: 1.2rem; }
-
-    .modal textarea {
-      width: 100%;
-      height: 100px;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      box-sizing: border-box;
-      outline: none;
-      font-family: inherit;
-      font-size: 14px;
-      margin-bottom: 16px;
-    }
-
-    .modal-btns {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px -1px rgba(37, 99, 235, 0.35);
     }
   </style>
 </head>
@@ -387,32 +363,32 @@
       </div>
     </header>
 
-    <!-- 頂部數據 Dash Cards -->
+    <!-- 頂部繽紛 Dash Cards -->
     <div class="dashboard-stats">
-      <div class="stat-card">
+      <div class="stat-card blue">
         <div>
-          <div class="stat-label">專案總數</div>
+          <div class="stat-label">專案總數量</div>
           <div class="stat-value" id="stat-total">0</div>
         </div>
-        <span style="font-size: 24px;">📁</span>
+        <span style="font-size: 28px;">📁</span>
       </div>
-      <div class="stat-card">
+      <div class="stat-card green">
         <div>
-          <div class="stat-label">可即時預覽 (Live Pages)</div>
-          <div class="stat-value" id="stat-live" style="color: #10b981;">0</div>
+          <div class="stat-label">可即時預覽 (Live)</div>
+          <div class="stat-value" id="stat-live">0</div>
         </div>
-        <span style="font-size: 24px;">🚀</span>
+        <span style="font-size: 28px;">🚀</span>
       </div>
-      <div class="stat-card">
+      <div class="stat-card purple">
         <div>
           <div class="stat-label">已隱藏項目</div>
-          <div class="stat-value" id="stat-hidden" style="color: #f59e0b;">0</div>
+          <div class="stat-value" id="stat-hidden">0</div>
         </div>
-        <span style="font-size: 24px;">👁️</span>
+        <span style="font-size: 28px;">👁️</span>
       </div>
     </div>
 
-    <!-- 控制列：搜尋與選頁籤 -->
+    <!-- 控制列 -->
     <div class="controls-bar">
       <div class="search-input-wrapper">
         <span class="search-icon">🔍</span>
@@ -420,26 +396,14 @@
       </div>
 
       <div class="filter-tabs">
-        <button class="tab-btn active" onclick="setTab('all', this)">全部</button>
-        <button class="tab-btn" onclick="setTab('html', this)">HTML/Pages</button>
+        <button class="tab-btn active" onclick="setTab('all', this)">全部專案</button>
+        <button class="tab-btn" onclick="setTab('html', this)">HTML / Pages</button>
         <button class="tab-btn" onclick="setTab('other', this)">其他語言</button>
       </div>
     </div>
 
-    <!-- 卡牌容器 -->
+    <!-- 卡牌網格區域 -->
     <div class="grid" id="repo-grid"></div>
-  </div>
-
-  <!-- 編輯敘述 Modal 彈窗 -->
-  <div class="modal-overlay" id="edit-modal">
-    <div class="modal">
-      <h3>✏️ 編輯專案敘述</h3>
-      <textarea id="modal-desc-input" placeholder="寫下專案的重點簡介..."></textarea>
-      <div class="modal-btns">
-        <button class="btn" onclick="closeModal()">取消</button>
-        <button class="btn" style="background: var(--primary-color); color: white;" onclick="saveModalDesc()">儲存變更</button>
-      </div>
-    </div>
   </div>
 
   <script>
@@ -452,14 +416,23 @@
     let allRepos = [];
     let sortableInstance = null;
     let activeTab = 'all';
-    let currentEditingId = null;
     let isListView = false;
 
+    // 5 種獨立邊框樣式類別名稱
+    const borderStyles = [
+      'style-gradient-border',
+      'style-neon-glow',
+      'style-double-line',
+      'style-dashed-modern',
+      'style-soft-clay'
+    ];
+
+    // 多彩亮色標籤配籤
     const colorPresets = [
-      { bg: '#e0f2fe', text: '#0369a1' }, // 藍
-      { bg: '#dcfce7', text: '#15803d' }, // 綠
-      { bg: '#f3e8ff', text: '#6b21a8' }, // 紫
-      { bg: '#ffedd5', text: '#c2410c' }  // 橘
+      { bg: 'linear-gradient(135deg, #e0f2fe, #bae6fd)', text: '#0284c7' }, // 湛藍
+      { bg: 'linear-gradient(135deg, #dcfce7, #86efac)', text: '#15803d' }, // 翡翠綠
+      { bg: 'linear-gradient(135deg, #f3e8ff, #d8b4fe)', text: '#7e22ce' }, // 炫彩紫
+      { bg: 'linear-gradient(135deg, #ffedd5, #fed7aa)', text: '#c2410c' }  // 珊瑚橘
     ];
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -525,32 +498,37 @@
         return;
       }
 
-      grid.innerHTML = repos.map(repo => {
+      grid.innerHTML = repos.map((repo, index) => {
         const pageUrl = `https://${GITHUB_USERNAME}.github.io/${repo.name}/`;
-        const currentDesc = customDescriptions[repo.id] || repo.description || "企業內部開發專案項目。";
+        const currentDesc = customDescriptions[repo.id] || repo.description || "💡 雙擊此處可修改專案簡介與備註...";
         const tagColorIdx = customTagColors[repo.id] || 0;
         const colorStyle = colorPresets[tagColorIdx];
+        
+        // 根據索引分配獨立特殊的卡牌邊框樣式
+        const borderStyleClass = borderStyles[index % borderStyles.length];
 
         return `
-          <div class="card" data-id="${repo.id}">
+          <div class="card ${borderStyleClass}" data-id="${repo.id}">
             <div>
               <div class="card-header">
                 <span class="card-title">${repo.name}</span>
                 <div class="card-actions">
-                  <button class="btn-icon" onclick="hideRepo('${repo.id}')" title="隱藏專案">👁️</button>
+                  <button class="btn-icon" onclick="hideRepo('${repo.id}')" title="隱藏專案">👁️️</button>
                   <span class="drag-handle">⣿</span>
                 </div>
               </div>
               <div class="card-desc-container">
-                <div class="card-desc" id="desc-${repo.id}">${currentDesc}</div>
-                <button class="btn-edit-desc" onclick="openModal('${repo.id}')">✏️ 編輯敘述</button>
+                <!-- 雙擊 (ondblclick) 直接觸發編輯 -->
+                <div class="card-desc" id="desc-${repo.id}" ondblclick="enableInlineEdit('${repo.id}')" title="💡 雙擊我編輯敘述">
+                  ${currentDesc}
+                </div>
               </div>
             </div>
             <div class="card-footer">
               <a href="${pageUrl}" target="_blank" class="badge-link" 
                  style="background: ${colorStyle.bg}; color: ${colorStyle.text};" 
                  onclick="cycleTagColor(event, '${repo.id}')" 
-                 title="左鍵開啟預覽 / 點擊切換標籤顏色">
+                 title="點擊開啟預覽 / 點擊切換顏色">
                  ${repo.language || "HTML"} ✨
               </a>
               <div class="links">
@@ -569,6 +547,32 @@
       });
     }
 
+    /* 雙擊直接編輯敘述 (Inline Edit) */
+    function enableInlineEdit(id) {
+      const descEl = document.getElementById(`desc-${id}`);
+      if (descEl.querySelector('input')) return; // 防止重複觸發
+
+      const currentText = customDescriptions[id] || (descEl.innerText.includes("雙擊此處") ? "" : descEl.innerText);
+      
+      descEl.innerHTML = `<input type="text" class="desc-inline-input" id="input-${id}" value="${currentText}" placeholder="請輸入專案敘述...">`;
+      const inputEl = document.getElementById(`input-${id}`);
+      inputEl.focus();
+
+      // 綁定 Enter 鍵與失焦事件完成儲存
+      const saveAction = () => {
+        const newText = inputEl.value.trim();
+        customDescriptions[id] = newText || "💡 雙擊此處可修改專案簡介與備註...";
+        localStorage.setItem('custom_descriptions', JSON.stringify(customDescriptions));
+        filterAndRender();
+      };
+
+      inputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') saveAction();
+      });
+
+      inputEl.addEventListener('blur', saveAction);
+    }
+
     /* 頁籤切換 */
     function setTab(tab, el) {
       activeTab = tab;
@@ -577,7 +581,7 @@
       filterAndRender();
     }
 
-    /* 切換顏色 */
+    /* 切換標籤顏色 */
     function cycleTagColor(e, id) {
       e.preventDefault();
       const currentIdx = customTagColors[id] || 0;
@@ -601,34 +605,12 @@
       filterAndRender();
     }
 
-    /* 切換 Grid / List */
+    /* 切換 Grid / List 檢視 */
     function toggleLayout() {
       const grid = document.getElementById('repo-grid');
       isListView = !isListView;
       grid.classList.toggle('list-view', isListView);
       document.getElementById('layout-icon').innerText = isListView ? "☷" : "☰";
-    }
-
-    /* Modal 彈窗控制 */
-    function openModal(id) {
-      currentEditingId = id;
-      const currentDesc = customDescriptions[id] || "企業內部開發專案項目。";
-      document.getElementById('modal-desc-input').value = currentDesc;
-      document.getElementById('edit-modal').classList.add('active');
-    }
-
-    function closeModal() {
-      document.getElementById('edit-modal').classList.remove('active');
-    }
-
-    function saveModalDesc() {
-      if (currentEditingId) {
-        const text = document.getElementById('modal-desc-input').value.trim();
-        customDescriptions[currentEditingId] = text;
-        localStorage.setItem('custom_descriptions', JSON.stringify(customDescriptions));
-        filterAndRender();
-      }
-      closeModal();
     }
   </script>
 </body>
