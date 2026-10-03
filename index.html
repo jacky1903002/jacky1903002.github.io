@@ -193,9 +193,9 @@
   </div>
 
   <script>
-    const GITHUB_USERNAME = "jacky1903002";[cite: 1]
+    const GITHUB_USERNAME = "jacky1903002";
 
-    // 預設核心專案清單 (內建資料：保證 0 秒呈現、絕不卡住)
+    // 預設核心專案清單 (內建資料：保證 0 秒呈現)
     const initialRepos = [
       {
         id: 1,
@@ -251,18 +251,18 @@
     let sortableInstance = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. 立即渲染預設專案資料，確保頁面開啟即有內容
+      // 1. 立即渲染預設專案資料
       renderRepos(allRepos);
 
-      // 2. 嘗試背景更新真實 GitHub API 資料（若失敗則維持預設）
+      // 2. 嘗試背景更新真實 GitHub API 資料
       fetchLiveRepos();
 
       // 3. 搜尋過濾功能
       document.getElementById('search').addEventListener('input', (e) => {
-        const keyword = e.target.value.toLowerCase().trim();[cite: 1]
+        const keyword = e.target.value.toLowerCase().trim();
         const filtered = allRepos.filter(repo => 
           repo.name.toLowerCase().includes(keyword) || 
-          (repo.description && repo.description.toLowerCase().includes(keyword))[cite: 1]
+          (repo.description && repo.description.toLowerCase().includes(keyword))
         );
         renderRepos(filtered);
       });
@@ -271,17 +271,17 @@
     // 非同步抓取 GitHub 實時專案
     async function fetchLiveRepos() {
       try {
-        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=30`);[cite: 1]
+        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=30`);
         if (response.ok) {
-          const data = await response.json();[cite: 1]
-          const fetched = data.filter(repo => !repo.fork);[cite: 1]
+          const data = await response.json();
+          const fetched = data.filter(repo => !repo.fork);
           if (fetched.length > 0) {
             allRepos = fetched;
             renderRepos(allRepos);
           }
         }
       } catch (e) {
-        console.log("使用內建資料展示。");
+        console.log("連線失敗，維持內建展示資料。");
       }
     }
 
