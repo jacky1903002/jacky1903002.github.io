@@ -3,172 +3,454 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>我的 GitHub 專案總覽入口</title>
+  <title>企業級專案整合入口平台</title>
+  
+  <!-- SortableJS (實現活潑拖曳與自動對齊網格) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
   <style>
     :root {
-      --bg-color: #0d1117;
-      --card-bg: #161b22;
-      --border-color: #30363d;
-      --text-color: #c9d1d9;
-      --accent-color: #58a6ff;
+      --bg-color: #0b0f17;
+      --card-bg: rgba(22, 27, 34, 0.75);
+      --card-hover-bg: #1f242d;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --primary-color: #2563eb;
+      --accent-color: #38bdf8;
+      --text-color: #f3f4f6;
+      --text-muted: #9ca3af;
+      --danger-color: #ef4444;
     }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: var(--bg-color);
+      background-image: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.15), transparent 70%);
       color: var(--text-color);
       margin: 0;
+      min-height: 100vh;
+    }
+
+    /* --- 登入畫面區塊 --- */
+    #auth-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
       padding: 20px;
-    }
-    header {
-      text-align: center;
-      padding: 40px 0 20px;
-    }
-    h1 { color: #ffffff; margin-bottom: 8px; }
-    p { color: #8b949e; }
-    .search-box {
-      margin: 20px auto 30px;
-      max-width: 400px;
-    }
-    .search-box input {
-      width: 100%;
-      padding: 10px 16px;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
-      background-color: var(--card-bg);
-      color: #fff;
-      font-size: 14px;
       box-sizing: border-box;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-      max-width: 1200px;
+
+    .auth-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .auth-card h2 {
+      margin-top: 0;
+      color: #ffffff;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.6);
+      color: #fff;
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+
+    /* --- 主頁面區塊 --- */
+    #app-container {
+      display: none;
+      padding: 30px;
+      max-width: 1280px;
       margin: 0 auto;
     }
-    .card {
-      background-color: var(--card-bg);
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+      background: linear-gradient(90deg, #fff, var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-info {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger-color);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: var(--danger-color);
+      color: white;
+    }
+
+    .search-bar {
+      margin-bottom: 30px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      max-width: 400px;
+      padding: 12px 18px;
+      border-radius: 20px;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 20px;
+      background: var(--card-bg);
+      color: white;
+      outline: none;
+    }
+
+    /* --- 活潑卡牌與 Grid 佈局 --- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: transform 0.2s, border-color 0.2s;
+      cursor: grab;
+      position: relative;
+      user-select: none;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
+
+    .card:active { cursor: grabbing; }
+
     .card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
       border-color: var(--accent-color);
+      background: var(--card-hover-bg);
     }
-    .card h3 {
-      margin: 0 0 10px 0;
-      color: var(--accent-color);
-      word-break: break-word;
+
+    /* 拖曳動畫樣式 */
+    .sortable-ghost {
+      opacity: 0.3;
+      border: 2px dashed var(--accent-color);
     }
-    .card p {
-      font-size: 14px;
-      line-height: 1.5;
-      flex-grow: 1;
+
+    .sortable-drag {
+      transform: rotate(3deg) scale(1.05) !important;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
-    .meta {
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0 0 8px 0;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+    }
+
+    .drag-handle {
+      color: var(--text-muted);
       font-size: 12px;
-      color: #8b949e;
-      margin-top: 15px;
+      opacity: 0.5;
     }
-    .badge {
-      background-color: #21262d;
-      padding: 2px 8px;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-    }
-    .links {
-      margin-top: 15px;
-      display: flex;
-      gap: 10px;
-    }
-    .links a {
-      color: var(--accent-color);
-      text-decoration: none;
+
+    .card-desc {
       font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      flex-grow: 1;
+      margin-bottom: 20px;
     }
-    .links a:hover { text-decoration: underline; }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent-color);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .links a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      margin-left: 10px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      transition: background 0.2s;
+    }
+
+    .links a:hover {
+      background: var(--primary-color);
+    }
+
+    #error-msg {
+      color: var(--danger-color);
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1 id="user-title">我的專案入口網</h1>
-    <p>自動同步與整合 GitHub 上的所有公開專案</p>
-    <div class="search-box">
-      <input type="text" id="search" placeholder="搜尋專案名稱或關鍵字..." onkeyup="filterRepos()">
+  <!-- 1. Firebase 登入畫面 -->
+  <div id="auth-container">
+    <div class="auth-card">
+      <h2>企業入口網站登入</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">請輸入電子郵件與密碼存取專案列表</p>
+      
+      <div class="form-group">
+        <label>電子郵件</label>
+        <input type="email" id="email" placeholder="name@company.com">
+      </div>
+      
+      <div class="form-group">
+        <label>密碼</label>
+        <input type="password" id="password" placeholder="••••••••">
+      </div>
+      
+      <button class="btn-primary" onclick="handleAuth()">登入 / 註冊</button>
+      <div id="error-msg"></div>
     </div>
-  </header>
-
-  <div class="grid" id="repo-grid">
-    <p style="text-align: center; grid-column: 1/-1;">正在載入專案列表中...</p>
   </div>
 
-  <script>
-    // ⚙️ 請在這裡填入你的 GitHub 帳號名稱
-    const GITHUB_USERNAME = "jacky1903002";
+  <!-- 2. 主頁面 (登入成功後顯示) -->
+  <div id="app-container">
+    <header>
+      <h1 id="user-title">企業專案儀表板</h1>
+      <div class="header-actions">
+        <span class="user-info" id="user-display"></span>
+        <button class="btn-logout" onclick="handleLogout()">登出</button>
+      </div>
+    </header>
 
+    <div class="search-bar">
+      <input type="text" id="search" placeholder="🔍 搜尋企業專案..." onkeyup="filterRepos()">
+    </div>
+
+    <!-- 可拖曳與自動對齊的卡牌網格區域 -->
+    <div class="grid" id="repo-grid">
+      <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">驗證權限中...</p>
+    </div>
+  </div>
+
+  <!-- Firebase SDK (ES Modules) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword, 
+      createUserWithEmailAndPassword, 
+      onAuthStateChanged, 
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // 🔑 已帶入您的 Firebase 金鑰設定
+    const firebaseConfig = {
+      apiKey: "AIzaSyBIdwm3yULBLJi3O0oHvmngxkIBgF7Q7j4",
+      authDomain: "jacky1903002.firebaseapp.com",
+      projectId: "jacky1903002",
+      storageBucket: "jacky1903002.firebasestorage.app",
+      messagingSenderId: "1018532314889",
+      appId: "1:1018532314889:web:ec04aec0fc9224e76d5dd8",
+      measurementId: "G-FLMTC0QJ38"
+    };
+
+    // 初始化 Firebase 與 Authentication
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // 全局變數
+    const GITHUB_USERNAME = "jacky1903002";[cite: 1]
     let allRepos = [];
+    let sortableInstance = null;
 
-    document.getElementById("user-title").innerText = `${GITHUB_USERNAME} 的專案入口網`;
+    // 帳號密碼登入 / 自動註冊邏輯
+    window.handleAuth = async () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('error-msg');
+      errorMsg.style.display = 'none';
 
-    // 透過 GitHub REST API 自動抓取 Repo 資訊
+      if (!email || !password) {
+        showError("請輸入完整的 Email 與密碼");
+        return;
+      }
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+          try {
+            await createUserWithEmailAndPassword(auth, email, password);
+          } catch (createError) {
+            showError(createError.message);
+          }
+        } else {
+          showError(error.message);
+        }
+      }
+    };
+
+    window.handleLogout = () => signOut(auth);
+
+    function showError(msg) {
+      const errorMsg = document.getElementById('error-msg');
+      errorMsg.innerText = msg;
+      errorMsg.style.display = 'block';
+    }
+
+    // 監聽 Firebase 驗證狀態變更
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById('auth-container').style.display = 'none';
+        document.getElementById('app-container').style.display = 'block';
+        document.getElementById('user-display').innerText = user.email;
+        fetchRepos();
+      } else {
+        document.getElementById('auth-container').style.display = 'flex';
+        document.getElementById('app-container').style.display = 'none';
+      }
+    });
+
+    // 抓取 GitHub 專案資料
     async function fetchRepos() {
       try {
-        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`);
-        const data = await response.json();
-        
-        // 過濾掉 Fork 別人的專案，只留下自己的專案（可依需求調整）
-        allRepos = data.filter(repo => !repo.fork);
+        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`);[cite: 1]
+        const data = await response.json();[cite: 1]
+        allRepos = data.filter(repo => !repo.fork);[cite: 1]
         renderRepos(allRepos);
       } catch (error) {
-        document.getElementById("repo-grid").innerHTML = "<p>載入專案失敗，請確認帳號名稱是否正確。</p>";
+        document.getElementById("repo-grid").innerHTML = "<p>載入專案資料失敗。</p>";
       }
     }
 
+    // 渲染卡牌並綁定 SortableJS 網格對齊拖曳功能
     function renderRepos(repos) {
       const grid = document.getElementById("repo-grid");
       if (repos.length === 0) {
-        grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>沒有找到符合條件的專案。</p>";
+        grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>尚無符合條件的專案。</p>";
         return;
       }
 
       grid.innerHTML = repos.map(repo => `
-        <div class="card">
+        <div class="card" data-id="${repo.id}">
           <div>
-            <h3>${repo.name}</h3>
-            <p>${repo.description || "尚無專案說明"}</p>
-          </div>
-          <div>
-            <div class="meta">
-              <span class="badge">${repo.language || "一般"}</span>
-              <span>⭐ ${repo.stargazers_count}</span>
+            <div class="card-title">
+              <span>${repo.name}</span>
+              <span class="drag-handle">:::</span>
             </div>
+            <div class="card-desc">${repo.description || "企業內部開發專案項目。"}</div>
+          </div>
+          <div class="card-footer">
+            <span class="badge">${repo.language || "Project"}</span>
             <div class="links">
-              <a href="${repo.html_url}" target="_blank">View Repo</a>
-              ${repo.homepage ? `<a href="${repo.homepage}" target="_blank">Live Demo 🔗</a>` : ""}
+              <a href="${repo.html_url}" target="_blank">Repo</a>
+              ${repo.homepage ? `<a href="${repo.homepage}" target="_blank">Demo 🔗</a>` : ""}
             </div>
           </div>
         </div>
       `).join('');
+
+      // 初始化拖曳排序
+      if (sortableInstance) sortableInstance.destroy();
+      sortableInstance = new Sortable(grid, {
+        animation: 250,
+        ghostClass: 'sortable-ghost',
+        dragClass: 'sortable-drag',
+        easing: "cubic-bezier(1, 0, 0, 1)",
+      });
     }
 
-    function filterRepos() {
-      const keyword = document.getElementById("search").value.toLowerCase();
+    // 專案搜尋過濾功能
+    window.filterRepos = () => {
+      const keyword = document.getElementById("search").value.toLowerCase();[cite: 1]
       const filtered = allRepos.filter(repo => 
         repo.name.toLowerCase().includes(keyword) || 
-        (repo.description && repo.description.toLowerCase().includes(keyword))
+        (repo.description && repo.description.toLowerCase().includes(keyword))[cite: 1]
       );
       renderRepos(filtered);
-    }
-
-    fetchRepos();
+    };
   </script>
 </body>
 </html>
