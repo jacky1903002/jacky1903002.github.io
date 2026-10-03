@@ -72,15 +72,43 @@
       text-transform: uppercase;
     }
 
+    /* 密碼輸入框與開關按鈕容器 */
+    .password-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
     .form-group input {
       width: 100%;
       padding: 12px;
+      padding-right: 45px; /* 留位置給眼睛按鈕 */
       border-radius: 8px;
       border: 1px solid var(--border-color);
       background: rgba(15, 23, 42, 0.6);
       color: #fff;
       box-sizing: border-box;
       outline: none;
+      font-size: 14px;
+    }
+
+    .toggle-password-btn {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+
+    .toggle-password-btn:hover {
+      color: #ffffff;
     }
 
     .btn-primary {
@@ -195,7 +223,6 @@
       background: var(--card-hover-bg);
     }
 
-    /* 拖曳動畫樣式 */
     .sortable-ghost {
       opacity: 0.3;
       border: 2px dashed var(--accent-color);
@@ -266,8 +293,9 @@
     #error-msg {
       color: var(--danger-color);
       font-size: 13px;
-      margin-top: 10px;
+      margin-top: 12px;
       display: none;
+      word-break: break-all;
     }
   </style>
 </head>
@@ -279,17 +307,25 @@
       <h2>企業入口網站登入</h2>
       <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">請輸入電子郵件與密碼存取專案列表</p>
       
-      <div class="form-group">
-        <label>電子郵件</label>
-        <input type="email" id="email" placeholder="name@company.com">
-      </div>
+      <form onsubmit="event.preventDefault(); handleAuth();">
+        <div class="form-group">
+          <label for="email">電子郵件</label>
+          <input type="email" id="email" placeholder="name@company.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">密碼</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="password" placeholder="••••••••" required>
+            <button type="button" class="toggle-password-btn" id="togglePasswordBtn" onclick="togglePasswordVisibility()" title="顯示/隱藏密碼">
+              👁️
+            </button>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn-primary" id="loginBtn">登入 / 註冊</button>
+      </form>
       
-      <div class="form-group">
-        <label>密碼</label>
-        <input type="password" id="password" placeholder="••••••••">
-      </div>
-      
-      <button class="btn-primary" onclick="handleAuth()">登入 / 註冊</button>
       <div id="error-msg"></div>
     </div>
   </div>
@@ -325,7 +361,7 @@
       signOut 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    // 🔑 已帶入您的 Firebase 金鑰設定
+    // Firebase 金鑰設定
     const firebaseConfig = {
       apiKey: "AIzaSyBIdwm3yULBLJi3O0oHvmngxkIBgF7Q7j4",
       authDomain: "jacky1903002.firebaseapp.com",
@@ -336,20 +372,33 @@
       measurementId: "G-FLMTC0QJ38"
     };
 
-    // 初始化 Firebase 與 Authentication
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // 全局變數
     const GITHUB_USERNAME = "jacky1903002";[cite: 1]
     let allRepos = [];
     let sortableInstance = null;
 
-    // 帳號密碼登入 / 自動註冊邏輯
+    // 控制顯示/隱藏密碼
+    window.togglePasswordVisibility = () => {
+      const passwordInput = document.getElementById('password');
+      const toggleBtn = document.getElementById('togglePasswordBtn');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleBtn.innerText = '🙈';
+      } else {
+        passwordInput.type = 'password';
+        toggleBtn.innerText = '👁️';
+      }
+    };
+
+    // 登入 / 自動註冊邏輯 (掛載到 window 以供全域呼叫)
     window.handleAuth = async () => {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
       const errorMsg = document.getElementById('error-msg');
+      const loginBtn = document.getElementById('loginBtn');
+      
       errorMsg.style.display = 'none';
 
       if (!email || !password) {
@@ -357,22 +406,45 @@
         return;
       }
 
+      loginBtn.innerText = "驗證中...";
+      loginBtn.disabled = true;
+
       try {
         await signInWithEmailAndPassword(auth, email, password);
       } catch (error) {
-        if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+        // 若帳號不存在或憑證不符，嘗試註冊新帳號
+        if (
+          error.code === 'auth/user-not-found' || 
+          error.code === 'auth/invalid-credential' ||
+          error.code === 'auth/wrong-password'
+        ) {
           try {
             await createUserWithEmailAndPassword(auth, email, password);
           } catch (createError) {
-            showError(createError.message);
+            handleFirebaseError(createError);
           }
         } else {
-          showError(error.message);
+          handleFirebaseError(error);
         }
+      } finally {
+        loginBtn.innerText = "登入 / 註冊";
+        loginBtn.disabled = false;
       }
     };
 
     window.handleLogout = () => signOut(auth);
+
+    function handleFirebaseError(error) {
+      if (error.code === 'auth/weak-password') {
+        showError("密碼強度不足，請輸入至少 6 位數密碼");
+      } else if (error.code === 'auth/invalid-email') {
+        showError("請輸入有效的 Email 格式");
+      } else if (error.code === 'auth/operation-not-allowed') {
+        showError("請先至 Firebase Console 開啟 Email/Password 登入功能！");
+      } else {
+        showError(`驗證失敗: ${error.message}`);
+      }
+    }
 
     function showError(msg) {
       const errorMsg = document.getElementById('error-msg');
@@ -380,7 +452,7 @@
       errorMsg.style.display = 'block';
     }
 
-    // 監聽 Firebase 驗證狀態變更
+    // 監聽 Firebase 驗證狀態
     onAuthStateChanged(auth, (user) => {
       if (user) {
         document.getElementById('auth-container').style.display = 'none';
@@ -405,7 +477,7 @@
       }
     }
 
-    // 渲染卡牌並綁定 SortableJS 網格對齊拖曳功能
+    // 渲染卡牌與 SortableJS
     function renderRepos(repos) {
       const grid = document.getElementById("repo-grid");
       if (repos.length === 0) {
@@ -432,7 +504,6 @@
         </div>
       `).join('');
 
-      // 初始化拖曳排序
       if (sortableInstance) sortableInstance.destroy();
       sortableInstance = new Sortable(grid, {
         animation: 250,
@@ -442,7 +513,7 @@
       });
     }
 
-    // 專案搜尋過濾功能
+    // 搜尋過濾
     window.filterRepos = () => {
       const keyword = document.getElementById("search").value.toLowerCase();[cite: 1]
       const filtered = allRepos.filter(repo => 
