@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的 GitHub 專案總覽入口</title>
+  <style>
+    :root {
+      --bg-color: #0d1117;
+      --card-bg: #161b22;
+      --border-color: #30363d;
+      --text-color: #c9d1d9;
+      --accent-color: #58a6ff;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      padding: 40px 0 20px;
+    }
+    h1 { color: #ffffff; margin-bottom: 8px; }
+    p { color: #8b949e; }
+    .search-box {
+      margin: 20px auto 30px;
+      max-width: 400px;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 10px 16px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: var(--card-bg);
+      color: #fff;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-color);
+    }
+    .card h3 {
+      margin: 0 0 10px 0;
+      color: var(--accent-color);
+      word-break: break-word;
+    }
+    .card p {
+      font-size: 14px;
+      line-height: 1.5;
+      flex-grow: 1;
+    }
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #8b949e;
+      margin-top: 15px;
+    }
+    .badge {
+      background-color: #21262d;
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+    .links {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+    }
+    .links a {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .links a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1 id="user-title">我的專案入口網</h1>
+    <p>自動同步與整合 GitHub 上的所有公開專案</p>
+    <div class="search-box">
+      <input type="text" id="search" placeholder="搜尋專案名稱或關鍵字..." onkeyup="filterRepos()">
+    </div>
+  </header>
+
+  <div class="grid" id="repo-grid">
+    <p style="text-align: center; grid-column: 1/-1;">正在載入專案列表中...</p>
+  </div>
+
+  <script>
+    // ⚙️ 請在這裡填入你的 GitHub 帳號名稱
+    const GITHUB_USERNAME = "jacky1903002";
+
+    let allRepos = [];
+
+    document.getElementById("user-title").innerText = `${GITHUB_USERNAME} 的專案入口網`;
+
+    // 透過 GitHub REST API 自動抓取 Repo 資訊
+    async function fetchRepos() {
+      try {
+        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`);
+        const data = await response.json();
+        
+        // 過濾掉 Fork 別人的專案，只留下自己的專案（可依需求調整）
+        allRepos = data.filter(repo => !repo.fork);
+        renderRepos(allRepos);
+      } catch (error) {
+        document.getElementById("repo-grid").innerHTML = "<p>載入專案失敗，請確認帳號名稱是否正確。</p>";
+      }
+    }
+
+    function renderRepos(repos) {
+      const grid = document.getElementById("repo-grid");
+      if (repos.length === 0) {
+        grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>沒有找到符合條件的專案。</p>";
+        return;
+      }
+
+      grid.innerHTML = repos.map(repo => `
+        <div class="card">
+          <div>
+            <h3>${repo.name}</h3>
+            <p>${repo.description || "尚無專案說明"}</p>
+          </div>
+          <div>
+            <div class="meta">
+              <span class="badge">${repo.language || "一般"}</span>
+              <span>⭐ ${repo.stargazers_count}</span>
+            </div>
+            <div class="links">
+              <a href="${repo.html_url}" target="_blank">View Repo</a>
+              ${repo.homepage ? `<a href="${repo.homepage}" target="_blank">Live Demo 🔗</a>` : ""}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterRepos() {
+      const keyword = document.getElementById("search").value.toLowerCase();
+      const filtered = allRepos.filter(repo => 
+        repo.name.toLowerCase().includes(keyword) || 
+        (repo.description && repo.description.toLowerCase().includes(keyword))
+      );
+      renderRepos(filtered);
+    }
+
+    fetchRepos();
+  </script>
+</body>
+</html>
