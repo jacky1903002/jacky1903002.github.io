@@ -553,7 +553,6 @@
         </div>
         <div>
           <h1 class="editable-title" id="main-header-title">個人網頁入口網站</h1>
-          <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; padding-left: 8px;" id="header-category-subtitle">💡 雙擊大標題可修改標題與大分類</div>
         </div>
       </div>
 
@@ -813,7 +812,6 @@
 
     function initHeaderInfo() {
       document.getElementById('main-header-title').innerText = storedTitle;
-      document.getElementById('header-category-subtitle').innerText = `分類：${storedHeaderCategory} (💡 雙擊大標題修改)`;
       updateHeaderImageBox(storedImgUrl);
     }
 
