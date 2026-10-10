@@ -832,7 +832,8 @@
 
     async function fetchLiveRepos() {
       try {
-        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`, {
+        // 使用 /user/repos 端點來抓取包含 Private 在內的所有專案
+        const response = await fetch(`https://api.github.com/user/repos?sort=updated&per_page=100`, {
           headers: {
             'Authorization': `token ${GITHUB_TOKEN}`,
             'Accept': 'application/vnd.github.v3+json'
