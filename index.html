@@ -246,10 +246,11 @@
     }
     .quick-links-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 12px;
     }
     .quick-link-card {
+      position: relative;
       background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.85);
@@ -270,7 +271,37 @@
       box-shadow: 0 12px 25px -8px rgba(37, 99, 235, 0.2);
     }
     
-    /* 圖示框尺寸縮小為 1/2 (自 42px 調整為 24px) */
+    /* 右上角小的 X 刪除按鈕 */
+    .quick-link-remove {
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(226, 232, 240, 0.8);
+      color: var(--text-muted);
+      border: none;
+      font-size: 11px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: all 0.2s ease;
+      z-index: 2;
+    }
+    .quick-link-card:hover .quick-link-remove {
+      opacity: 1;
+    }
+    .quick-link-remove:hover {
+      background: #ef4444;
+      color: #ffffff;
+      transform: scale(1.15);
+    }
+
+    /* 圖示框尺寸 (24px) */
     .quick-link-icon {
       font-size: 14px;
       width: 24px;
@@ -285,6 +316,7 @@
     }
     .quick-link-info {
       overflow: hidden;
+      padding-right: 10px;
     }
     .quick-link-name {
       font-size: 13px;
@@ -657,50 +689,72 @@
   <script>
     const GITHUB_USERNAME = "jacky1903002";
 
-    const quickLinksData = [
+    let quickLinksData = [
       {
+        id: "firebase",
         name: "Firebase Console",
         icon: "🔥",
         url: "https://console.firebase.google.com/",
         desc: { 'zh-TW': "雲端資料庫與專案後台管理", 'en': "Cloud DB & Project Management Console" }
       },
       {
+        id: "github",
         name: "GitHub",
         icon: "🐙",
         url: "https://github.com",
         desc: { 'zh-TW': "程式碼儲存庫與版本控制平台", 'en': "Code Repository & Version Control Platform" }
       },
       {
+        id: "gemini",
         name: "Google Gemini",
         icon: "✨",
         url: "https://gemini.google.com/",
         desc: { 'zh-TW': "AI 輔助開發與智慧對話助手", 'en': "AI Development & Dialogue Assistant" }
       },
       {
+        id: "gmail",
+        name: "Gmail",
+        icon: "✉️",
+        url: "https://mail.google.com/mail/u/0/#inbox",
+        desc: { 'zh-TW': "Google 電子郵件與收件匣服務", 'en': "Google Mail & Inbox Service" }
+      },
+      {
+        id: "discord",
+        name: "Discord",
+        icon: "💬",
+        url: "https://discord.com/channels/1043203307784642611",
+        desc: { 'zh-TW': "社群交流與語音頻道", 'en': "Community Chat & Voice Channel" }
+      },
+      {
+        id: "jsontoexcel",
         name: "JSON to Excel",
         icon: "📊",
         url: "https://jsontoexcel.net/",
         desc: { 'zh-TW': "JSON 格式快速轉換為 Excel / CSV", 'en': "Convert JSON to Excel / CSV Fast" }
       },
       {
+        id: "jsonlint",
         name: "JSONLint",
         icon: "🔍",
         url: "https://jsonlint.com/",
         desc: { 'zh-TW': "JSON 格式驗證與排版工具", 'en': "JSON Validator & Formatter" }
       },
       {
+        id: "tableconvert",
         name: "TableConvert",
         icon: "🔄",
         url: "https://tableconvert.com/",
         desc: { 'zh-TW': "多種表格資料格式線上轉換工具", 'en': "Online Multi-format Table Converter" }
       },
       {
+        id: "imgbb",
         name: "ImgBB",
         icon: "🖼️",
         url: "https://imgbb.com/",
         desc: { 'zh-TW': "免費圖片託管與線上圖床服務", 'en': "Free Image Hosting & Upload Service" }
       },
       {
+        id: "pinetools",
         name: "PineTools Image Splitter",
         icon: "✂️",
         url: "https://pinetools.com/split-image",
@@ -829,6 +883,7 @@
       const container = document.getElementById('quick-links-container');
       container.innerHTML = quickLinksData.map(item => `
         <a href="${item.url}" target="_blank" class="quick-link-card" title="${item.name}">
+          <button class="quick-link-remove" onclick="removeQuickLink(event, '${item.id}')" title="刪除此捷徑">✕</button>
           <div class="quick-link-icon">${item.icon}</div>
           <div class="quick-link-info">
             <div class="quick-link-name">${item.name}</div>
@@ -836,6 +891,13 @@
           </div>
         </a>
       `).join('');
+    }
+
+    function removeQuickLink(event, id) {
+      event.preventDefault();
+      event.stopPropagation();
+      quickLinksData = quickLinksData.filter(item => item.id !== id);
+      renderQuickLinks();
     }
 
     function applyLanguageUI() {
