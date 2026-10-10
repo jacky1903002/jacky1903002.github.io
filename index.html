@@ -150,7 +150,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 36px;
+      margin-bottom: 28px;
     }
 
     .logo-group {
@@ -229,6 +229,77 @@
       color: var(--primary);
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
+    }
+
+    /* 頂部常用快速連結區塊 */
+    .quick-links-section {
+      margin-bottom: 32px;
+    }
+    .quick-links-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .quick-links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+    }
+    .quick-link-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 16px;
+      padding: 14px 16px;
+      text-decoration: none;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.05);
+      transition: all 0.25s ease;
+    }
+    .quick-link-card:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.95);
+      border-color: var(--primary);
+      box-shadow: 0 12px 25px -8px rgba(37, 99, 235, 0.2);
+    }
+    .quick-link-icon {
+      font-size: 24px;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      flex-shrink: 0;
+    }
+    .quick-link-info {
+      overflow: hidden;
+    }
+    .quick-link-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .quick-link-desc {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .dashboard-stats {
@@ -530,6 +601,14 @@
       </div>
     </header>
 
+    <!-- 頂部常用快速連結區域 -->
+    <div class="quick-links-section">
+      <div class="quick-links-title">
+        <span>⚡</span> <span id="text-quick-links-title">常用開發與工具網站</span>
+      </div>
+      <div class="quick-links-grid" id="quick-links-container"></div>
+    </div>
+
     <!-- Stats -->
     <div class="dashboard-stats">
       <div class="stat-card blue">
@@ -576,9 +655,49 @@
   <script>
     const GITHUB_USERNAME = "jacky1903002";
 
+    const quickLinksData = [
+      {
+        name: "Firebase Console",
+        icon: "🔥",
+        url: "https://console.firebase.google.com/",
+        desc: { 'zh-TW': "雲端資料庫與專案後台管理", 'en': "Cloud DB & Project Management Console" }
+      },
+      {
+        name: "GitHub",
+        icon: "🐙",
+        url: "https://github.com",
+        desc: { 'zh-TW': "程式碼儲存庫與版本控制平台", 'en': "Code Repository & Version Control Platform" }
+      },
+      {
+        name: "Google Gemini",
+        icon: "✨",
+        url: "https://gemini.google.com/",
+        desc: { 'zh-TW': "AI 輔助開發與智慧對話助手", 'en': "AI Development & Dialogue Assistant" }
+      },
+      {
+        name: "JSON to Excel",
+        icon: "📊",
+        url: "https://jsontoexcel.net/",
+        desc: { 'zh-TW': "JSON 格式快速轉換為 Excel / CSV", 'en': "Convert JSON to Excel / CSV Fast" }
+      },
+      {
+        name: "JSONLint",
+        icon: "🔍",
+        url: "https://jsonlint.com/",
+        desc: { 'zh-TW': "JSON 格式驗證與排版工具", 'en': "JSON Validator & Formatter" }
+      },
+      {
+        name: "TableConvert",
+        icon: "🔄",
+        url: "https://tableconvert.com/",
+        desc: { 'zh-TW': "多種表格資料格式線上轉換工具", 'en': "Online Multi-format Table Converter" }
+      }
+    ];
+
     const i18n = {
       'zh-TW': {
         defaultTitle: '個人網頁入口網站',
+        quickLinksTitle: '常用開發與工具網站',
         toggleLayout: '切換檢視',
         resetHidden: '重置隱藏專案',
         statTotal: '專案總數量',
@@ -597,6 +716,7 @@
       },
       'en': {
         defaultTitle: 'Personal Web Entrance Portal',
+        quickLinksTitle: 'Frequent Tools & Platforms',
         toggleLayout: 'Toggle View',
         resetHidden: 'Reset Hidden Repos',
         statTotal: 'Total Projects',
@@ -685,13 +805,28 @@
 
     function initApp() {
       applyLanguageUI();
+      renderQuickLinks();
       initHeaderInfo();
       initFirebaseSync();
       fetchLiveRepos();
     }
 
+    function renderQuickLinks() {
+      const container = document.getElementById('quick-links-container');
+      container.innerHTML = quickLinksData.map(item => `
+        <a href="${item.url}" target="_blank" class="quick-link-card" title="${item.name}">
+          <div class="quick-link-icon">${item.icon}</div>
+          <div class="quick-link-info">
+            <div class="quick-link-name">${item.name}</div>
+            <div class="quick-link-desc">${item.desc[currentLang] || item.desc['zh-TW']}</div>
+          </div>
+        </a>
+      `).join('');
+    }
+
     function applyLanguageUI() {
       const texts = i18n[currentLang];
+      document.getElementById('text-quick-links-title').innerText = texts.quickLinksTitle;
       document.getElementById('text-toggle-layout').innerText = texts.toggleLayout;
       document.getElementById('text-reset-hidden').innerText = texts.resetHidden;
       document.getElementById('text-stat-total-label').innerText = texts.statTotal;
@@ -712,6 +847,7 @@
       }
 
       applyLanguageUI();
+      renderQuickLinks();
       initHeaderInfo();
       filterAndRender();
 
@@ -731,6 +867,7 @@
                 currentLang = data.appLang;
                 localStorage.setItem('app_lang', currentLang);
                 applyLanguageUI();
+                renderQuickLinks();
               }
 
               storedTitle = data.headerTitle || storedTitle;
