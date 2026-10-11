@@ -510,11 +510,12 @@
     }
     .btn-readme:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(124, 58, 237, 0.4); }
 
+    /* 改用非常顯眼的強烈高對比橘紅漸層 (Live 按鈕) */
     .btn-demo {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
     }
-    .btn-demo:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4); }
+    .btn-demo:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(249, 115, 22, 0.6); filter: brightness(1.05); }
 
     .btn-code {
       background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
@@ -725,7 +726,7 @@
         langBtnText: '🌐 繁體中文',
         emptyText: '尚無專案或符合條件的項目。',
         readmeBtn: '📖 README',
-        demoBtn: '🌐 Demo',
+        demoBtn: '🚀 LIVE',
         codeBtn: '📦 Code',
         hideTooltip: '隱藏專案',
         pinTooltip: '⭐ 釘選/取消釘選至頂部',
@@ -748,7 +749,7 @@
         langBtnText: '🌐 English',
         emptyText: 'No projects found or matching filter criteria.',
         readmeBtn: '📖 README',
-        demoBtn: '🌐 Demo',
+        demoBtn: '🚀 LIVE',
         codeBtn: '📦 Code',
         hideTooltip: 'Hide Project',
         pinTooltip: '⭐ Pin/Unpin to Top',
@@ -1141,7 +1142,7 @@
             <div class="card-footer" style="padding-top: 10px;">
               <div class="links-group">
                 <button class="btn-action btn-readme" onclick="openReadmeModal('${repoKey}', '${repo.name}')">📖 <span>README</span></button>
-                <a href="${pageUrl}" target="_blank" class="btn-action btn-demo">🌐 <span>Demo</span></a>
+                <a href="${pageUrl}" target="_blank" class="btn-action btn-demo">🚀 <span>LIVE</span></a>
                 <a href="${repo.html_url}" target="_blank" class="btn-action btn-code">📦 <span>Code</span></a>
               </div>
             </div>
@@ -1221,7 +1222,7 @@
 
                       <div class="links-group">
                         <button class="btn-action btn-readme" onclick="openReadmeModal('${repoKey}', '${repo.name}')" title="查看與編輯專案 README 說明">📖 <span>README</span></button>
-                        <a href="${pageUrl}" target="_blank" class="btn-action btn-demo" title="Live Preview">🌐 <span>Demo</span></a>
+                        <a href="${pageUrl}" target="_blank" class="btn-action btn-demo" title="Live Preview">🚀 <span>LIVE</span></a>
                         <a href="${repo.html_url}" target="_blank" class="btn-action btn-code" title="GitHub Source">📦 <span>Code</span></a>
                       </div>
                     </div>
