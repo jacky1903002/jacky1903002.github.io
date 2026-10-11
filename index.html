@@ -231,7 +231,6 @@
       box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
     }
 
-    /* 頂部快捷與釘選區塊共用樣式 */
     .quick-links-section, .pinned-section {
       margin-bottom: 32px;
     }
@@ -409,7 +408,6 @@
       transform: translateY(-8px) scale(1.01); box-shadow: var(--shadow-hover); background: rgba(255, 255, 255, 0.95);
     }
 
-    /* 卡片縮圖預覽樣式 */
     .card-thumbnail {
       width: 100%; height: 140px; border-radius: 14px; object-fit: cover; margin-bottom: 16px;
       border: 1px solid rgba(203, 213, 225, 0.6); background: #f1f5f9; cursor: pointer;
@@ -420,7 +418,6 @@
     .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .card-actions { display: flex; align-items: center; gap: 6px; }
 
-    /* 狀態標籤樣式 */
     .status-badge {
       font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; cursor: pointer;
       border: 1px solid transparent; display: inline-flex; align-items: center; gap: 4px;
@@ -456,7 +453,6 @@
       outline: none; box-sizing: border-box; background: #ffffff; color: #0f172a;
     }
 
-    /* 最後更新時間 */
     .card-meta-info {
       font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 14px;
       display: flex; align-items: center; gap: 4px; padding-left: 8px;
@@ -479,13 +475,35 @@
       border: 2px solid var(--primary); outline: none; width: 110px; background: #ffffff; color: #0f172a;
     }
 
-    .links-group { display: flex; gap: 6px; flex-wrap: wrap; }
+    /* === 三等分並排長方條按鈕樣式 === */
+    .links-group { 
+      display: flex; 
+      gap: 6px; 
+      width: 100%; 
+    }
 
     .btn-action {
-      color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 800;
-      padding: 6px 10px; border-radius: 10px; transition: all 0.25s;
-      display: inline-flex; align-items: center; gap: 3px;
+      flex: 1;
+      min-width: 0;
+      color: #ffffff; 
+      text-decoration: none; 
+      font-size: 11px; 
+      font-weight: 800;
+      padding: 8px 4px; 
+      border-radius: 10px; 
+      transition: all 0.25s;
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 3px;
+      white-space: nowrap;
     }
+    
+    .btn-action span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .btn-readme {
       background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
       box-shadow: 0 4px 10px rgba(124, 58, 237, 0.25);
@@ -707,8 +725,8 @@
         langBtnText: '🌐 繁體中文',
         emptyText: '尚無專案或符合條件的項目。',
         readmeBtn: '📖 README',
-        demoBtn: '🌐 Live Demo',
-        codeBtn: '📦 Source Code',
+        demoBtn: '🌐 Demo',
+        codeBtn: '📦 Code',
         hideTooltip: '隱藏專案',
         pinTooltip: '⭐ 釘選/取消釘選至頂部',
         tagTooltip: '💡 提示：雙擊此分類標籤可直接修改分類名稱！單擊可切換顏色。',
@@ -730,8 +748,8 @@
         langBtnText: '🌐 English',
         emptyText: 'No projects found or matching filter criteria.',
         readmeBtn: '📖 README',
-        demoBtn: '🌐 Live Demo',
-        codeBtn: '📦 Source Code',
+        demoBtn: '🌐 Demo',
+        codeBtn: '📦 Code',
         hideTooltip: 'Hide Project',
         pinTooltip: '⭐ Pin/Unpin to Top',
         tagTooltip: '💡 Tip: Double click tag to edit category name! Click once to change color.',
@@ -757,7 +775,7 @@
     let customCategories = JSON.parse(localStorage.getItem('custom_categories') || '{}');
     let customTagColors = JSON.parse(localStorage.getItem('custom_tag_colors') || '{}');
     let customThumbnails = JSON.parse(localStorage.getItem('custom_thumbnails') || '{}');
-    let repoStatuses = JSON.parse(localStorage.getItem('repo_statuses') || '{}'); // 0: stable, 1: dev, 2: archived
+    let repoStatuses = JSON.parse(localStorage.getItem('repo_statuses') || '{}');
     let storedTitle = localStorage.getItem('dashboard_header_title') || i18n[currentLang].defaultTitle;
     let storedHeaderCategory = localStorage.getItem('dashboard_header_category') || '主要專案';
     let storedImgUrl = localStorage.getItem('dashboard_header_img') || '';
@@ -1086,7 +1104,6 @@
       renderCategorizedRepos(visibleRepos);
     }
 
-    // 渲染頂部釘選專案
     function renderPinnedRepos() {
       const wrapper = document.getElementById('pinned-section-wrapper');
       const container = document.getElementById('pinned-repos-container');
@@ -1122,8 +1139,11 @@
               <div class="card-desc" style="font-size: 1.1rem;" ondblclick="enableInlineEdit('${repoKey}')">${currentDesc}</div>
             </div>
             <div class="card-footer" style="padding-top: 10px;">
-              <a href="${pageUrl}" target="_blank" class="btn-action btn-demo">${texts.demoBtn}</a>
-              <button class="btn-action btn-readme" onclick="openReadmeModal('${repoKey}', '${repo.name}')">${texts.readmeBtn}</button>
+              <div class="links-group">
+                <button class="btn-action btn-readme" onclick="openReadmeModal('${repoKey}', '${repo.name}')">📖 <span>README</span></button>
+                <a href="${pageUrl}" target="_blank" class="btn-action btn-demo">🌐 <span>Demo</span></a>
+                <a href="${repo.html_url}" target="_blank" class="btn-action btn-code">📦 <span>Code</span></a>
+              </div>
             </div>
           </div>
         `;
@@ -1200,9 +1220,9 @@
                       </span>
 
                       <div class="links-group">
-                        <button class="btn-action btn-readme" onclick="openReadmeModal('${repoKey}', '${repo.name}')" title="查看與編輯專案 README 說明">${texts.readmeBtn}</button>
-                        <a href="${pageUrl}" target="_blank" class="btn-action btn-demo" title="Live Preview">${texts.demoBtn}</a>
-                        <a href="${repo.html_url}" target="_blank" class="btn-action btn-code" title="GitHub Source">${texts.codeBtn}</a>
+                        <button class="btn-action btn-readme" onclick="openReadmeModal('${repoKey}', '${repo.name}')" title="查看與編輯專案 README 說明">📖 <span>README</span></button>
+                        <a href="${pageUrl}" target="_blank" class="btn-action btn-demo" title="Live Preview">🌐 <span>Demo</span></a>
+                        <a href="${repo.html_url}" target="_blank" class="btn-action btn-code" title="GitHub Source">📦 <span>Code</span></a>
                       </div>
                     </div>
                   </div>
@@ -1228,7 +1248,6 @@
       });
     }
 
-    // 互動功能函數
     function togglePin(id) {
       const targetId = String(id);
       if (pinnedRepoIds.includes(targetId)) {
