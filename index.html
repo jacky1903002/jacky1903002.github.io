@@ -68,7 +68,7 @@
       position: relative;
     }
 
-    #auth-modal {
+    #auth-modal, #readme-modal {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(15, 23, 42, 0.6);
@@ -231,7 +231,6 @@
       box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
     }
 
-    /* 頂部常用快速連結區塊 */
     .quick-links-section {
       margin-bottom: 32px;
     }
@@ -271,7 +270,6 @@
       box-shadow: 0 12px 25px -8px rgba(37, 99, 235, 0.2);
     }
     
-    /* 右上角小的 X 刪除按鈕 */
     .quick-link-remove {
       position: absolute;
       top: 4px;
@@ -292,16 +290,9 @@
       transition: all 0.2s ease;
       z-index: 2;
     }
-    .quick-link-card:hover .quick-link-remove {
-      opacity: 1;
-    }
-    .quick-link-remove:hover {
-      background: #ef4444;
-      color: #ffffff;
-      transform: scale(1.15);
-    }
+    .quick-link-card:hover .quick-link-remove { opacity: 1; }
+    .quick-link-remove:hover { background: #ef4444; color: #ffffff; transform: scale(1.15); }
 
-    /* 圖示框尺寸 (24px) */
     .quick-link-icon {
       font-size: 14px;
       width: 24px;
@@ -569,20 +560,26 @@
       color: #0f172a;
     }
 
-    .links-group { display: flex; gap: 8px; }
+    .links-group { display: flex; gap: 6px; flex-wrap: wrap; }
 
     .btn-action {
       color: #ffffff;
       text-decoration: none;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
-      padding: 8px 16px;
+      padding: 8px 12px;
       border-radius: 12px;
       transition: all 0.25s;
       display: inline-flex;
       align-items: center;
       gap: 4px;
     }
+    .btn-readme {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+    }
+    .btn-readme:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(124, 58, 237, 0.4); }
+
     .btn-demo {
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
@@ -608,6 +605,18 @@
         <button type="submit" class="auth-btn">登入系統</button>
         <div id="auth-error" class="auth-error"></div>
       </form>
+    </div>
+  </div>
+
+  <!-- README 編輯與檢視互動視窗 -->
+  <div id="readme-modal" style="display: none;">
+    <div class="auth-card" style="max-width: 600px; width: 90%; text-align: left; padding: 30px;">
+      <h3 id="readme-modal-title" style="margin-bottom: 16px; font-weight: 900; color: var(--text-main);">📖 專案 README 說明</h3>
+      <textarea id="readme-textarea" class="auth-input" style="height: 250px; resize: vertical; font-family: monospace; font-size: 13px;" placeholder="在此輸入專案的詳細說明、使用方法、安裝步驟 (支援 Markdown 格式)..."></textarea>
+      <div style="display: flex; gap: 12px; margin-top: 16px;">
+        <button type="button" class="auth-btn" onclick="saveReadmeContent()" style="flex: 1;">儲存說明</button>
+        <button type="button" class="auth-btn" onclick="closeReadmeModal()" style="flex: 1; background: #64748b; box-shadow: 0 10px 20px rgba(100, 116, 139, 0.25);">關閉</button>
+      </div>
     </div>
   </div>
 
@@ -776,6 +785,7 @@
         tabHtml: 'HTML / Pages',
         langBtnText: '🌐 繁體中文',
         emptyText: '尚無專案或符合條件的項目。',
+        readmeBtn: '📖 README',
         demoBtn: '🌐 Live Demo',
         codeBtn: '📦 Source Code',
         hideTooltip: '隱藏專案',
@@ -795,6 +805,7 @@
         tabHtml: 'HTML / Pages',
         langBtnText: '🌐 English',
         emptyText: 'No projects found or matching filter criteria.',
+        readmeBtn: '📖 README',
         demoBtn: '🌐 Live Demo',
         codeBtn: '📦 Source Code',
         hideTooltip: 'Hide Project',
@@ -815,6 +826,7 @@
     let currentLang = localStorage.getItem('app_lang') || 'zh-TW';
     let hiddenRepoIds = JSON.parse(localStorage.getItem('hidden_repos') || '[]');
     let customDescriptions = JSON.parse(localStorage.getItem('custom_descriptions') || '{}');
+    let customReadmes = JSON.parse(localStorage.getItem('custom_readmes') || '{}');
     let customCategories = JSON.parse(localStorage.getItem('custom_categories') || '{}');
     let customTagColors = JSON.parse(localStorage.getItem('custom_tag_colors') || '{}');
     let storedTitle = localStorage.getItem('dashboard_header_title') || i18n[currentLang].defaultTitle;
@@ -825,6 +837,7 @@
     let sortableInstances = [];
     let activeTab = 'all';
     let isListView = false;
+    let currentEditingReadmeId = null;
 
     const borderStyles = ['style-1', 'style-2', 'style-3', 'style-4', 'style-5'];
 
@@ -950,6 +963,7 @@
               storedHeaderCategory = data.headerCategory || storedHeaderCategory;
               storedImgUrl = data.headerImg !== undefined ? data.headerImg : storedImgUrl;
               customDescriptions = data.customDescriptions || customDescriptions;
+              customReadmes = data.customReadmes || customReadmes;
               customCategories = data.customCategories || customCategories;
               customTagColors = data.customTagColors || customTagColors;
               hiddenRepoIds = data.hiddenRepoIds || hiddenRepoIds;
@@ -958,6 +972,7 @@
               localStorage.setItem('dashboard_header_category', storedHeaderCategory);
               localStorage.setItem('dashboard_header_img', storedImgUrl);
               localStorage.setItem('custom_descriptions', JSON.stringify(customDescriptions));
+              localStorage.setItem('custom_readmes', JSON.stringify(customReadmes));
               localStorage.setItem('custom_categories', JSON.stringify(customCategories));
               localStorage.setItem('custom_tag_colors', JSON.stringify(customTagColors));
               localStorage.setItem('hidden_repos', JSON.stringify(hiddenRepoIds));
@@ -977,6 +992,7 @@
       if (updates.headerCategory !== undefined) localStorage.setItem('dashboard_header_category', updates.headerCategory);
       if (updates.headerImg !== undefined) localStorage.setItem('dashboard_header_img', updates.headerImg);
       if (updates.customDescriptions !== undefined) localStorage.setItem('custom_descriptions', JSON.stringify(updates.customDescriptions));
+      if (updates.customReadmes !== undefined) localStorage.setItem('custom_readmes', JSON.stringify(updates.customReadmes));
       if (updates.customCategories !== undefined) localStorage.setItem('custom_categories', JSON.stringify(updates.customCategories));
       if (updates.customTagColors !== undefined) localStorage.setItem('custom_tag_colors', JSON.stringify(updates.customTagColors));
       if (updates.hiddenRepoIds !== undefined) localStorage.setItem('hidden_repos', JSON.stringify(updates.hiddenRepoIds));
@@ -1176,6 +1192,7 @@
                       </span>
 
                       <div class="links-group">
+                        <button class="btn-action btn-readme" onclick="openReadmeModal('${repoKey}', '${repo.name}')" title="查看與編輯專案 README 說明">${texts.readmeBtn}</button>
                         <a href="${pageUrl}" target="_blank" class="btn-action btn-demo" title="Live Preview">${texts.demoBtn}</a>
                         <a href="${repo.html_url}" target="_blank" class="btn-action btn-code" title="GitHub Source">${texts.codeBtn}</a>
                       </div>
@@ -1201,6 +1218,32 @@
         });
         sortableInstances.push(sortable);
       });
+    }
+
+    // README Modal 控制邏輯
+    function openReadmeModal(repoKey, repoName) {
+      currentEditingReadmeId = repoKey;
+      const modal = document.getElementById('readme-modal');
+      const titleEl = document.getElementById('readme-modal-title');
+      const textareaEl = document.getElementById('readme-textarea');
+
+      titleEl.innerText = `📖 README 說明 — ${repoName}`;
+      textareaEl.value = customReadmes[repoKey] || '';
+      modal.style.display = 'flex';
+    }
+
+    function closeReadmeModal() {
+      document.getElementById('readme-modal').style.display = 'none';
+      currentEditingReadmeId = null;
+    }
+
+    function saveReadmeContent() {
+      if (!currentEditingReadmeId) return;
+      const content = document.getElementById('readme-textarea').value;
+      customReadmes[currentEditingReadmeId] = content;
+
+      saveToFirebaseAndLocal({ customReadmes });
+      closeReadmeModal();
     }
 
     function enableInlineEdit(id) {
