@@ -231,10 +231,11 @@
       box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
     }
 
-    .quick-links-section {
+    /* 頂部快捷與釘選區塊共用樣式 */
+    .quick-links-section, .pinned-section {
       margin-bottom: 32px;
     }
-    .quick-links-title {
+    .section-title {
       font-size: 1.1rem;
       font-weight: 800;
       color: var(--text-main);
@@ -243,7 +244,7 @@
       align-items: center;
       gap: 8px;
     }
-    .quick-links-grid {
+    .quick-links-grid, .pinned-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 12px;
@@ -305,26 +306,14 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
       flex-shrink: 0;
     }
-    .quick-link-info {
-      overflow: hidden;
-      padding-right: 10px;
-    }
+    .quick-link-info { overflow: hidden; padding-right: 10px; }
     .quick-link-name {
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--text-main);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 13px; font-weight: 800; color: var(--text-main);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .quick-link-desc {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-top: 1px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 1px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
     .dashboard-stats {
@@ -348,9 +337,7 @@
       transition: all 0.3s ease;
     }
     .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 4px; height: 100%;
+      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
     }
     .stat-card.blue::before { background: linear-gradient(180deg, #3b82f6, #60a5fa); }
     .stat-card.green::before { background: linear-gradient(180deg, #10b981, #34d399); }
@@ -368,100 +355,48 @@
       margin-bottom: 36px;
     }
     .search-input-wrapper {
-      position: relative;
-      flex: 1;
-      min-width: 300px;
-      max-width: 440px;
+      position: relative; flex: 1; min-width: 300px; max-width: 440px;
     }
     .search-input-wrapper input {
-      width: 100%;
-      padding: 14px 20px 14px 46px;
-      border-radius: 16px;
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(12px);
-      color: var(--text-main);
-      outline: none;
-      font-size: 14px;
-      font-weight: 600;
+      width: 100%; padding: 14px 20px 14px 46px;
+      border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8);
+      background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px);
+      color: var(--text-main); outline: none; font-size: 14px; font-weight: 600;
       transition: all 0.25s;
     }
     .search-input-wrapper input:focus {
-      border-color: var(--primary);
-      background: #ffffff;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
     }
-    .search-icon {
-      position: absolute;
-      left: 16px; top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-    }
+    .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
     .filter-tabs {
-      display: flex;
-      background: rgba(226, 232, 240, 0.6);
-      backdrop-filter: blur(10px);
-      padding: 5px;
-      border-radius: 14px;
-      gap: 4px;
+      display: flex; background: rgba(226, 232, 240, 0.6); backdrop-filter: blur(10px);
+      padding: 5px; border-radius: 14px; gap: 4px;
     }
     .tab-btn {
-      border: none;
-      background: transparent;
-      padding: 8px 18px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.2s;
+      border: none; background: transparent; padding: 8px 18px; border-radius: 10px;
+      font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all 0.2s;
     }
-    .tab-btn.active {
-      background: #ffffff;
-      color: var(--primary);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    }
-    .btn-lang {
-      background: rgba(37, 99, 235, 0.1);
-      color: var(--primary);
-      border: 1px solid rgba(37, 99, 235, 0.2);
-    }
+    .tab-btn.active { background: #ffffff; color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+    .btn-lang { background: rgba(37, 99, 235, 0.1); color: var(--primary); border: 1px solid rgba(37, 99, 235, 0.2); }
     .btn-lang:hover { background: var(--primary); color: #ffffff; }
 
     .category-section { margin-bottom: 40px; }
     .category-header {
-      font-size: 1.5rem;
-      font-weight: 900;
-      color: var(--text-main);
-      margin-bottom: 20px;
-      padding-bottom: 8px;
-      border-bottom: 2px solid rgba(203, 213, 225, 0.6);
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-size: 1.5rem; font-weight: 900; color: var(--text-main); margin-bottom: 20px;
+      padding-bottom: 8px; border-bottom: 2px solid rgba(203, 213, 225, 0.6);
+      display: flex; align-items: center; gap: 10px;
     }
 
     .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 28px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 28px;
     }
     .grid.list-view { grid-template-columns: 1fr; }
 
     .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 24px;
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      user-select: none;
-      box-shadow: var(--shadow-glass);
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      overflow: hidden;
+      background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px; padding: 28px; display: flex; flex-direction: column; justify-content: space-between;
+      position: relative; user-select: none; box-shadow: var(--shadow-glass);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); overflow: hidden;
     }
 
     .style-1 { border: 2px solid transparent; background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), linear-gradient(135deg, #3b82f6, #8b5cf6); background-origin: border-box; background-clip: padding-box, border-box; }
@@ -471,126 +406,103 @@
     .style-5 { border: 2px solid rgba(226, 232, 240, 0.9); box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
 
     .card:hover {
-      transform: translateY(-8px) scale(1.01);
-      box-shadow: var(--shadow-hover);
-      background: rgba(255, 255, 255, 0.95);
+      transform: translateY(-8px) scale(1.01); box-shadow: var(--shadow-hover); background: rgba(255, 255, 255, 0.95);
     }
 
-    .card-top { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 12px; }
-    .card-actions { display: flex; align-items: center; gap: 8px; }
+    /* 卡片縮圖預覽樣式 */
+    .card-thumbnail {
+      width: 100%; height: 140px; border-radius: 14px; object-fit: cover; margin-bottom: 16px;
+      border: 1px solid rgba(203, 213, 225, 0.6); background: #f1f5f9; cursor: pointer;
+      transition: filter 0.2s;
+    }
+    .card-thumbnail:hover { filter: brightness(0.95); }
+
+    .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .card-actions { display: flex; align-items: center; gap: 6px; }
+
+    /* 狀態標籤樣式 */
+    .status-badge {
+      font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; cursor: pointer;
+      border: 1px solid transparent; display: inline-flex; align-items: center; gap: 4px;
+      transition: transform 0.2s;
+    }
+    .status-badge:hover { transform: scale(1.05); }
+    .status-stable { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+    .status-dev { background: #fef9c3; color: #a16207; border-color: #fef08a; }
+    .status-archived { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
 
     .btn-icon {
-      background: rgba(241, 245, 249, 0.8);
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 13px;
-      width: 28px; height: 28px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
+      background: rgba(241, 245, 249, 0.8); border: none; color: var(--text-muted); cursor: pointer;
+      font-size: 12px; width: 26px; height: 26px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
     }
     .btn-icon:hover { background: #fee2e2; color: #ef4444; }
-    .drag-handle { color: var(--text-muted); font-size: 16px; opacity: 0.3; cursor: grab; }
+    .btn-icon.star-btn:hover { background: #fef9c3; color: #ca8a04; }
+    .btn-icon.star-btn.pinned { background: #fef08a; color: #ca8a04; }
+    .drag-handle { color: var(--text-muted); font-size: 14px; opacity: 0.3; cursor: grab; }
 
-    .card-body { margin-bottom: 28px; flex-grow: 1; }
+    .card-body { margin-bottom: 20px; flex-grow: 1; }
 
     .card-desc {
-      font-size: 1.4rem;
-      font-weight: 900;
-      color: #0f172a;
-      line-height: 1.35;
-      padding: 8px 10px;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
+      font-size: 1.3rem; font-weight: 900; color: #0f172a; line-height: 1.35;
+      padding: 6px 8px; border-radius: 12px; cursor: pointer; transition: all 0.2s;
       letter-spacing: -0.3px;
     }
     .card-desc:hover { background: rgba(37, 99, 235, 0.06); color: var(--primary); }
 
     .desc-inline-input {
-      width: 100%;
-      font-size: 1.4rem;
-      font-weight: 900;
-      font-family: inherit;
-      padding: 6px 10px;
-      border: 2px solid var(--primary);
-      border-radius: 12px;
-      outline: none;
-      box-sizing: border-box;
-      background: #ffffff;
-      color: #0f172a;
+      width: 100%; font-size: 1.3rem; font-weight: 900; font-family: inherit;
+      padding: 6px 10px; border: 2px solid var(--primary); border-radius: 12px;
+      outline: none; box-sizing: border-box; background: #ffffff; color: #0f172a;
+    }
+
+    /* 最後更新時間 */
+    .card-meta-info {
+      font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 4px; padding-left: 8px;
     }
 
     .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 18px;
-      border-top: 1px solid rgba(226, 232, 240, 0.6);
-      gap: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 14px; border-top: 1px solid rgba(226, 232, 240, 0.6); gap: 8px;
     }
 
     .badge-link {
-      font-size: 12px;
-      font-weight: 800;
-      padding: 8px 14px;
-      border-radius: 30px;
-      text-decoration: none;
-      transition: all 0.25s;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      border: 1px dashed rgba(37, 99, 235, 0.4);
+      font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 30px;
+      text-decoration: none; transition: all 0.25s; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 4px; border: 1px dashed rgba(37, 99, 235, 0.4);
     }
     .badge-link:hover { transform: scale(1.05); filter: brightness(0.95); border-color: var(--primary); }
 
     .badge-inline-input {
-      font-size: 12px;
-      font-weight: 800;
-      padding: 4px 8px;
-      border-radius: 10px;
-      border: 2px solid var(--primary);
-      outline: none;
-      width: 130px;
-      background: #ffffff;
-      color: #0f172a;
+      font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 10px;
+      border: 2px solid var(--primary); outline: none; width: 110px; background: #ffffff; color: #0f172a;
     }
 
     .links-group { display: flex; gap: 6px; flex-wrap: wrap; }
 
     .btn-action {
-      color: #ffffff;
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 800;
-      padding: 8px 12px;
-      border-radius: 12px;
-      transition: all 0.25s;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 800;
+      padding: 6px 10px; border-radius: 10px; transition: all 0.25s;
+      display: inline-flex; align-items: center; gap: 3px;
     }
     .btn-readme {
       background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+      box-shadow: 0 4px 10px rgba(124, 58, 237, 0.25);
     }
-    .btn-readme:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(124, 58, 237, 0.4); }
+    .btn-readme:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(124, 58, 237, 0.4); }
 
     .btn-demo {
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
     }
-    .btn-demo:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(16, 185, 129, 0.4); }
+    .btn-demo:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4); }
 
     .btn-code {
       background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
     }
-    .btn-code:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4); }
+    .btn-code:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4); }
   </style>
 </head>
 <body>
@@ -646,10 +558,18 @@
 
     <!-- 頂部常用快速連結區域 -->
     <div class="quick-links-section">
-      <div class="quick-links-title">
+      <div class="section-title">
         <span>⚡</span> <span id="text-quick-links-title">常用開發與工具網站</span>
       </div>
       <div class="quick-links-grid" id="quick-links-container"></div>
+    </div>
+
+    <!-- 頂部釘選 / 精選專案區塊 -->
+    <div class="pinned-section" id="pinned-section-wrapper" style="display: none;">
+      <div class="section-title">
+        <span>⭐</span> <span id="text-pinned-title">精選釘選專案 (Pinned Repositories)</span>
+      </div>
+      <div class="pinned-grid" id="pinned-repos-container"></div>
     </div>
 
     <!-- Stats -->
@@ -775,6 +695,7 @@
       'zh-TW': {
         defaultTitle: '個人網頁入口網站',
         quickLinksTitle: '常用開發與工具網站',
+        pinnedTitle: '精選釘選專案 (Pinned Repositories)',
         toggleLayout: '切換檢視',
         resetHidden: '重置隱藏專案',
         statTotal: '專案總數量',
@@ -789,12 +710,15 @@
         demoBtn: '🌐 Live Demo',
         codeBtn: '📦 Source Code',
         hideTooltip: '隱藏專案',
+        pinTooltip: '⭐ 釘選/取消釘選至頂部',
         tagTooltip: '💡 提示：雙擊此分類標籤可直接修改分類名稱！單擊可切換顏色。',
-        promptImgUrl: '請輸入大方框圖片網址 (留空則保持原樣/使用預設 Icon)：'
+        promptImgUrl: '請輸入大方框圖片網址 (留空則保持原樣/使用預設 Icon)：',
+        promptThumbUrl: '請輸入此專案的縮圖預覽圖片網址 (留空則不顯示縮圖)：'
       },
       'en': {
         defaultTitle: 'Personal Web Entrance Portal',
         quickLinksTitle: 'Frequent Tools & Platforms',
+        pinnedTitle: 'Pinned Repositories',
         toggleLayout: 'Toggle View',
         resetHidden: 'Reset Hidden Repos',
         statTotal: 'Total Projects',
@@ -809,8 +733,10 @@
         demoBtn: '🌐 Live Demo',
         codeBtn: '📦 Source Code',
         hideTooltip: 'Hide Project',
+        pinTooltip: '⭐ Pin/Unpin to Top',
         tagTooltip: '💡 Tip: Double click tag to edit category name! Click once to change color.',
-        promptImgUrl: 'Enter header logo URL (leave empty to keep default icon):'
+        promptImgUrl: 'Enter header logo URL (leave empty to keep default icon):',
+        promptThumbUrl: 'Enter thumbnail image URL for this project (leave empty to hide):'
       }
     };
 
@@ -825,10 +751,13 @@
 
     let currentLang = localStorage.getItem('app_lang') || 'zh-TW';
     let hiddenRepoIds = JSON.parse(localStorage.getItem('hidden_repos') || '[]');
+    let pinnedRepoIds = JSON.parse(localStorage.getItem('pinned_repos') || '[]');
     let customDescriptions = JSON.parse(localStorage.getItem('custom_descriptions') || '{}');
     let customReadmes = JSON.parse(localStorage.getItem('custom_readmes') || '{}');
     let customCategories = JSON.parse(localStorage.getItem('custom_categories') || '{}');
     let customTagColors = JSON.parse(localStorage.getItem('custom_tag_colors') || '{}');
+    let customThumbnails = JSON.parse(localStorage.getItem('custom_thumbnails') || '{}');
+    let repoStatuses = JSON.parse(localStorage.getItem('repo_statuses') || '{}'); // 0: stable, 1: dev, 2: archived
     let storedTitle = localStorage.getItem('dashboard_header_title') || i18n[currentLang].defaultTitle;
     let storedHeaderCategory = localStorage.getItem('dashboard_header_category') || '主要專案';
     let storedImgUrl = localStorage.getItem('dashboard_header_img') || '';
@@ -846,6 +775,12 @@
       { bg: 'linear-gradient(135deg, #dcfce7, #86efac)', text: '#15803d' },
       { bg: 'linear-gradient(135deg, #f3e8ff, #d8b4fe)', text: '#7e22ce' },
       { bg: 'linear-gradient(135deg, #ffedd5, #fed7aa)', text: '#c2410c' }
+    ];
+
+    const statusConfigs = [
+      { key: 'stable', label: '🟢 穩定運行', cls: 'status-stable' },
+      { key: 'dev', label: '🟡 開發調整中', cls: 'status-dev' },
+      { key: 'archived', label: '🔴 已歸檔', cls: 'status-archived' }
     ];
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -916,6 +851,7 @@
     function applyLanguageUI() {
       const texts = i18n[currentLang];
       document.getElementById('text-quick-links-title').innerText = texts.quickLinksTitle;
+      document.getElementById('text-pinned-title').innerText = texts.pinnedTitle;
       document.getElementById('text-toggle-layout').innerText = texts.toggleLayout;
       document.getElementById('text-reset-hidden').innerText = texts.resetHidden;
       document.getElementById('text-stat-total-label').innerText = texts.statTotal;
@@ -966,7 +902,10 @@
               customReadmes = data.customReadmes || customReadmes;
               customCategories = data.customCategories || customCategories;
               customTagColors = data.customTagColors || customTagColors;
+              customThumbnails = data.customThumbnails || customThumbnails;
               hiddenRepoIds = data.hiddenRepoIds || hiddenRepoIds;
+              pinnedRepoIds = data.pinnedRepoIds || pinnedRepoIds;
+              repoStatuses = data.repoStatuses || repoStatuses;
               
               localStorage.setItem('dashboard_header_title', storedTitle);
               localStorage.setItem('dashboard_header_category', storedHeaderCategory);
@@ -975,7 +914,10 @@
               localStorage.setItem('custom_readmes', JSON.stringify(customReadmes));
               localStorage.setItem('custom_categories', JSON.stringify(customCategories));
               localStorage.setItem('custom_tag_colors', JSON.stringify(customTagColors));
+              localStorage.setItem('custom_thumbnails', JSON.stringify(customThumbnails));
               localStorage.setItem('hidden_repos', JSON.stringify(hiddenRepoIds));
+              localStorage.setItem('pinned_repos', JSON.stringify(pinnedRepoIds));
+              localStorage.setItem('repo_statuses', JSON.stringify(repoStatuses));
 
               initHeaderInfo();
               updateStats();
@@ -995,7 +937,10 @@
       if (updates.customReadmes !== undefined) localStorage.setItem('custom_readmes', JSON.stringify(updates.customReadmes));
       if (updates.customCategories !== undefined) localStorage.setItem('custom_categories', JSON.stringify(updates.customCategories));
       if (updates.customTagColors !== undefined) localStorage.setItem('custom_tag_colors', JSON.stringify(updates.customTagColors));
+      if (updates.customThumbnails !== undefined) localStorage.setItem('custom_thumbnails', JSON.stringify(updates.customThumbnails));
       if (updates.hiddenRepoIds !== undefined) localStorage.setItem('hidden_repos', JSON.stringify(updates.hiddenRepoIds));
+      if (updates.pinnedRepoIds !== undefined) localStorage.setItem('pinned_repos', JSON.stringify(updates.pinnedRepoIds));
+      if (updates.repoStatuses !== undefined) localStorage.setItem('repo_statuses', JSON.stringify(updates.repoStatuses));
 
       if (window.db) {
         const dashboardRef = window.dbRef(window.db, 'dashboard_data');
@@ -1068,12 +1013,12 @@
         }
       } catch (e) {
         allRepos = [
-          { id: '1', name: "jacky1903002.github.io", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/jacky1903002.github.io` },
-          { id: '2', name: "equipmentexpansionganttchart", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/equipmentexpansionganttchart` },
-          { id: '3', name: "Machinecustomerconfig", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/Machinecustomerconfig` },
-          { id: '4', name: "01-mfgoutput", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/01-mfgoutput`, homepage: `https://${GITHUB_USERNAME}.github.io/01-mfgoutput` },
-          { id: '5', name: "02-mfgoutput", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/02-mfgoutput`, homepage: `https://${GITHUB_USERNAME}.github.io/02-mfgoutput` },
-          { id: '6', name: "03-mfgoutput", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/03-mfgoutput`, homepage: `https://${GITHUB_USERNAME}.github.io/03-mfgoutput` }
+          { id: '1', name: "jacky1903002.github.io", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/jacky1903002.github.io`, updated_at: "2026-10-01T00:00:00Z" },
+          { id: '2', name: "equipmentexpansionganttchart", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/equipmentexpansionganttchart`, updated_at: "2026-09-15T00:00:00Z" },
+          { id: '3', name: "Machinecustomerconfig", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/Machinecustomerconfig`, updated_at: "2026-09-10T00:00:00Z" },
+          { id: '4', name: "01-mfgoutput", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/01-mfgoutput`, homepage: `https://${GITHUB_USERNAME}.github.io/01-mfgoutput`, updated_at: "2026-10-05T00:00:00Z" },
+          { id: '5', name: "02-mfgoutput", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/02-mfgoutput`, homepage: `https://${GITHUB_USERNAME}.github.io/02-mfgoutput`, updated_at: "2026-09-20T00:00:00Z" },
+          { id: '6', name: "03-mfgoutput", description: "", language: "HTML", html_url: `https://github.com/${GITHUB_USERNAME}/03-mfgoutput`, homepage: `https://${GITHUB_USERNAME}.github.io/03-mfgoutput`, updated_at: "2026-09-25T00:00:00Z" }
         ];
       }
       updateStats();
@@ -1106,6 +1051,12 @@
       return customCategories[repoKey] || customCategories[repo.name] || repo.language || '未分類專案';
     }
 
+    function formatUpdateTime(dateStr) {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+    }
+
     function updateStats() {
       document.getElementById('stat-total').innerText = allRepos.length;
       document.getElementById('stat-hidden').innerText = hiddenRepoIds.length;
@@ -1131,7 +1082,52 @@
         return !isHidden && matchesKeyword && matchesTab;
       });
 
+      renderPinnedRepos();
       renderCategorizedRepos(visibleRepos);
+    }
+
+    // 渲染頂部釘選專案
+    function renderPinnedRepos() {
+      const wrapper = document.getElementById('pinned-section-wrapper');
+      const container = document.getElementById('pinned-repos-container');
+      const texts = i18n[currentLang];
+
+      const pinnedList = allRepos.filter(repo => {
+        const repoKey = String(repo.id || repo.name);
+        return pinnedRepoIds.includes(repoKey) || pinnedRepoIds.includes(repo.name);
+      });
+
+      if (pinnedList.length === 0 || document.getElementById('search').value.trim() !== '') {
+        wrapper.style.display = 'none';
+        return;
+      }
+
+      wrapper.style.display = 'block';
+      container.innerHTML = pinnedList.map((repo, index) => {
+        const pageUrl = repo.homepage || `https://${GITHUB_USERNAME}.github.io/${repo.name}/`;
+        const repoKey = String(repo.id || repo.name);
+        const currentDesc = getRepoDescription(repo);
+        const statusIdx = repoStatuses[repoKey] || 0;
+        const currentStatus = statusConfigs[statusIdx];
+        const thumbUrl = customThumbnails[repoKey] || customThumbnails[repo.name] || '';
+
+        return `
+          <div class="card style-1" style="padding: 20px;">
+            ${thumbUrl ? `<img src="${thumbUrl}" class="card-thumbnail" style="height: 100px;" onclick="editThumbnail('${repoKey}')" title="更換縮圖">` : ''}
+            <div class="card-top" style="margin-bottom: 6px;">
+              <span class="status-badge ${currentStatus.cls}" onclick="cycleStatus('${repoKey}')" title="點擊切換專案狀態">${currentStatus.label}</span>
+              <button class="btn-icon star-btn pinned" onclick="togglePin('${repoKey}')" title="取消釘選">⭐</button>
+            </div>
+            <div class="card-body" style="margin-bottom: 14px;">
+              <div class="card-desc" style="font-size: 1.1rem;" ondblclick="enableInlineEdit('${repoKey}')">${currentDesc}</div>
+            </div>
+            <div class="card-footer" style="padding-top: 10px;">
+              <a href="${pageUrl}" target="_blank" class="btn-action btn-demo">${texts.demoBtn}</a>
+              <button class="btn-action btn-readme" onclick="openReadmeModal('${repoKey}', '${repo.name}')">${texts.readmeBtn}</button>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     function renderCategorizedRepos(repos) {
@@ -1166,10 +1162,20 @@
                 const colorStyle = colorPresets[tagColorIdx];
                 const borderStyleClass = borderStyles[index % borderStyles.length];
 
+                const statusIdx = repoStatuses[repoKey] || 0;
+                const currentStatus = statusConfigs[statusIdx];
+                const isPinned = pinnedRepoIds.includes(repoKey) || pinnedRepoIds.includes(repo.name);
+                const thumbUrl = customThumbnails[repoKey] || customThumbnails[repo.name] || '';
+                const updateTimeStr = formatUpdateTime(repo.updated_at);
+
                 return `
                   <div class="card ${borderStyleClass}" data-id="${repoKey}">
+                    ${thumbUrl ? `<img src="${thumbUrl}" class="card-thumbnail" onclick="editThumbnail('${repoKey}')" title="點擊更換專案縮圖網址">` : ''}
+
                     <div class="card-top">
+                      <span class="status-badge ${currentStatus.cls}" onclick="cycleStatus('${repoKey}')" title="點擊切換專案狀態">${currentStatus.label}</span>
                       <div class="card-actions">
+                        <button class="btn-icon star-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin('${repoKey}')" title="${texts.pinTooltip}">⭐</button>
                         <button class="btn-icon" onclick="hideRepo('${repoKey}')" title="${texts.hideTooltip}">👁</button>
                         <span class="drag-handle">⣿</span>
                       </div>
@@ -1180,6 +1186,8 @@
                         ${currentDesc}
                       </div>
                     </div>
+
+                    ${updateTimeStr ? `<div class="card-meta-info">🕒 更新於：${updateTimeStr}</div>` : ''}
 
                     <div class="card-footer">
                       <span class="badge-link" 
@@ -1220,7 +1228,37 @@
       });
     }
 
-    // README Modal 控制邏輯
+    // 互動功能函數
+    function togglePin(id) {
+      const targetId = String(id);
+      if (pinnedRepoIds.includes(targetId)) {
+        pinnedRepoIds = pinnedRepoIds.filter(item => item !== targetId);
+      } else {
+        pinnedRepoIds.push(targetId);
+      }
+      saveToFirebaseAndLocal({ pinnedRepoIds });
+      filterAndRender();
+    }
+
+    function cycleStatus(id) {
+      const targetId = String(id);
+      const currentIdx = repoStatuses[targetId] || 0;
+      repoStatuses[targetId] = (currentIdx + 1) % statusConfigs.length;
+      saveToFirebaseAndLocal({ repoStatuses });
+      filterAndRender();
+    }
+
+    function editThumbnail(id) {
+      const targetId = String(id);
+      const currentUrl = customThumbnails[targetId] || '';
+      const newUrl = prompt(i18n[currentLang].promptThumbUrl, currentUrl);
+      if (newUrl !== null) {
+        customThumbnails[targetId] = newUrl.trim();
+        saveToFirebaseAndLocal({ customThumbnails });
+        filterAndRender();
+      }
+    }
+
     function openReadmeModal(repoKey, repoName) {
       currentEditingReadmeId = repoKey;
       const modal = document.getElementById('readme-modal');
